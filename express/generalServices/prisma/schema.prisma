@@ -85,28 +85,7 @@ model Roles {
   id               Int                @id @default(autoincrement())
   name             String
   users            Users[] // relation to Users (one-to-many)
-  RolesPermissions RolesPermissions[] // relation to RolesPermissions (many-to-many)
-
   @@map("roles")
-}
-
-model Permissions {
-  id               Int                @id @default(autoincrement())
-  name             String
-  RolesPermissions RolesPermissions[] // relation to RolesPermissions (many-to-many)
-
-  @@map("permissions")
-}
-
-model RolesPermissions {
-  id           Int @id @default(autoincrement())
-  roleId       Int @map("role_id") // FK
-  permissionId Int @map("permission_id") // FK
-
-  Roles       Roles       @relation(fields: [roleId], references: [id]) // relation to Roles (many-to-many)
-  Permissions Permissions @relation(fields: [permissionId], references: [id]) // relation to Permissions (many-to-many)
-
-  @@map("roles_permissions")
 }
 
 model Invoices {
