@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5673:5672"    # RabbitMQ server port
+      - "15673:15672"  # RabbitMQ management UI
+    networks:
+      - app-network
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 20s
+      retries: 3
+
+  mysql:
+    image: "mysql:8.0.40"
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-volume:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 3
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+    env_file:
+      - ./order-service/.env
+    volumes:
+      - ./order-service:/app
+  general-services:
+    build:
+      context: ./general-services
+    ports:
+      - "3001:3001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./general-services/.env
+    networks:
+      - app-network
+    volumes:
+      - ./general-services:/app
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - order-service
+      - general-services
+    networks:
+      - app-network
+    volumes:
+      - ./gateway:/app
+
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  mysql-volume:
+  rabbitmq_data:

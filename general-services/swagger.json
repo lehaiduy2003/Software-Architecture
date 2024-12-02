@@ -1,0 +1,23 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "General Services API",
+    "description": "API documentation for the General Services"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "paths": {
+    "/foods": {
+      "get": {
+        "summary": "Get all foods",
+        "responses": {
+          "200": {
+            "description": "A list of foods"
+          }
+        }
+      }
+    }
+  }
+}
