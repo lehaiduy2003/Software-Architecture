@@ -5,7 +5,6 @@ import http from 'http';
 import { log } from "console";
 const port = "4080";
 const host = process.env.HOST || "localhost";
-log(port, host);
 const server = http.createServer(app);
 
 server.listen(port, () => {

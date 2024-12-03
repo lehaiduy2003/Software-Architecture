@@ -1,6 +1,6 @@
 import prisma from "../../configs/prisma";
 
-export default class UserService {
+export default class AccountService {
     public getAllUsers = async () => {
         return [];
     }
@@ -18,7 +18,7 @@ export default class UserService {
                 },
             },
         })
-        if(!user) {
+        if (!user) {
             return null;
         }
         return user;

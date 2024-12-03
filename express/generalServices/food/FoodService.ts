@@ -1,3 +1,4 @@
+import { log } from "console";
 import prisma from "../../configs/prisma";
 
 export default class FoodService {
@@ -9,10 +10,52 @@ export default class FoodService {
     public getFoodById = async (id: number) => {
         const f = await prisma.foods.findUnique({
             where: {
-                id: id
+                id: Number(id)
             }
         });
         return f;
+    }
+
+    public getAllRestaurants = async () => {
+        const data = await prisma.restaurants.findMany({
+            select: {
+                id: true,
+                name: true,
+                phone: true,
+                address: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+        });
+        log(data);
+        return data;
+    }
+
+    public getMenuByRestaurantId = async (restaurantId: number) => {
+        return await prisma.categories.findMany({
+            where: {
+                foods: {
+                    some: {
+                        restaurantId: restaurantId,
+                    },
+                },
+            },
+            select: {
+                name: true,
+                foods: {
+                    select: {
+                        name: true,
+                        description: true,
+                        price: true,
+                        FoodImages: {
+                            select: {
+                                imageUrl: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
     }
 
     public createFood = async (data: any) => {
@@ -39,5 +82,5 @@ export default class FoodService {
             }
         });
         return f;
-    }
+    };
 }

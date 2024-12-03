@@ -14,10 +14,12 @@ export default class FoodRoute extends BaseRoute {
     }
 
     private initRoutes() {
+        this.router.get("/get-all-restaurants", this.foodController.getAllRestaurants);
+        this.router.get("/:restaurantId/menu", this.foodController.getMenuByRestaurantId);
         this.router.get("/", this.foodController.getAllFood);
         this.router.get("/:foodId", this.foodController.getFoodById);
         this.router.post("/", this.foodController.createFood);
         this.router.put("/:foodId", this.foodController.updateFood);
-        this.router.delete("/:foodId",  this.foodController.deleteFood);
+        this.router.delete("/:foodId", this.foodController.deleteFood);
     }
 }

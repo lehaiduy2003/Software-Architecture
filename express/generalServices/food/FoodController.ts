@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { BaseController } from "../utils/BaseController";
 import FoodService from "./FoodService";
+import { log } from "console";
 
 export default class FoodController extends BaseController {
     private foodService: FoodService;
@@ -77,4 +78,33 @@ export default class FoodController extends BaseController {
             throw error;
         }
     }
+
+    public getAllRestaurants = async (req: Request, res: Response) => {
+        try {
+            log("Get all restaurants");
+            const restaurants = await this.foodService.getAllRestaurants();
+            if (!restaurants || restaurants.length === 0) {
+                return this.sendResponse(res, 400, { success: false, result: [] });
+            }
+            return this.sendResponse(res, 200, { success: true, result: restaurants });
+        } catch (error) {
+            this.sendError(res, 500, "Internal server error");
+            throw error;
+        }
+    };
+
+    // Lấy thực đơn theo ID nhà hàng
+    public getMenuByRestaurantId = async (req: Request, res: Response) => {
+        try {
+            const restaurantId = parseInt(req.params.restaurantId);
+            const menu = await this.foodService.getMenuByRestaurantId(restaurantId);
+            if (!menu) {
+                return this.sendResponse(res, 404, { success: false, message: "Menu not found" });
+            }
+            return this.sendResponse(res, 200, { success: true, result: menu });
+        } catch (error) {
+            this.sendError(res, 500, "Internal server error");
+            throw error;
+        }
+    };
 }
