@@ -35,9 +35,7 @@ services:
       retries: 3
 
   order-service:
-    container_name: order-service
-    build:
-      context: ./order-service
+    image: lehaiduy2003/server-order-service:latest
     ports:
       - "3002:3002"
     depends_on:
@@ -59,9 +57,7 @@ services:
       timeout: 20s
       retries: 3
   general-services:
-    container_name: general-services
-    build:
-      context: ./general-services
+    image: lehaiduy2003/server-general-services:latest
     ports:
       - "3001:3001"
     depends_on:
@@ -84,9 +80,7 @@ services:
       retries: 3
 
   gateway:
-    container_name: gateway
-    build:
-      context: ./gateway
+    image: lehaiduy2003/server-gateway:latest
     ports:
       - "8080:8080"
     depends_on:
