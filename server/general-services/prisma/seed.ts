@@ -65,7 +65,7 @@ const userSeed = async () => {
     roleId: 1,
   };
 
-  const userCount = 0;
+  const userCount = await prisma.users.count();
 
   if (userCount === 0) {
     await prisma.users.create({
