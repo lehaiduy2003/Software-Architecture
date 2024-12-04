@@ -51,11 +51,6 @@ services:
       - ./order-service:/app
     command: >
       sh -c "npx prisma migrate deploy && npm run dev"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
-      interval: 5s
-      timeout: 20s
-      retries: 3
   general-services:
     image: lehaiduy2003/server-general-services:latest
     ports:
@@ -73,11 +68,6 @@ services:
       - ./general-services:/app
     command: >
       sh -c "npx prisma migrate deploy && npm run seed && npm run dev"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
-      interval: 5s
-      timeout: 20s
-      retries: 3
 
   gateway:
     image: lehaiduy2003/server-gateway:latest
