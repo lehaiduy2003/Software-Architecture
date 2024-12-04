@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import { log } from "console";
-import { IUser } from "../utils/interfaces/IUser";
 import prisma from "../../prisma/database";
 import AuthService from "../services/AuthService";
 

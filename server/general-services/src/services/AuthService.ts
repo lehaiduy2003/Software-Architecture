@@ -18,13 +18,18 @@ export default class AuthService {
     return user;
   };
 
-  public register = async (phoneNumber: string, fullName: string, password: string) => {
+  public register = async (
+    email: string,
+    phoneNumber: string,
+    fullName: string,
+    password: string
+  ) => {
     const user = await prisma.users.create({
       data: {
         phone: phoneNumber,
         name: fullName,
         password: password,
-        email: "",
+        email: email,
         roleId: 3,
       },
     });

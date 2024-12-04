@@ -17,12 +17,14 @@ export default class AuthController extends BaseController {
 
   public register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { phoneNumber, fullName, password } = req.body;
-      if (!phoneNumber || !fullName || !password) {
-        return this.sendError(res, 400, "Phone number, full name and password are required");
+      // console.log(req.body);
+
+      const { phoneNumber, fullName, password, email } = req.body;
+      if (!phoneNumber || !fullName || !password || !email) {
+        return this.sendError(res, 400, "Phone number, email, full name and password are required");
       }
 
-      const user = await this.authService.register(phoneNumber, fullName, password);
+      const user = await this.authService.register(email, phoneNumber, fullName, password);
       if (!user) {
         return this.sendError(res, 400, "Failed to register");
       }
