@@ -17,7 +17,7 @@ export function AuthLayout({
       {/* Left Section */}
       <div className="flex-1 flex flex-col justify-center items-center px-6 md:px-12">
         <div className="">
-          <h1 className="text-3xl  font-semibold mb-6 font-serif">
+          <h1 className="text-3xl mt-3 font-semibold mb-6 font-serif">
             Food Order Management
           </h1>
         </div>
