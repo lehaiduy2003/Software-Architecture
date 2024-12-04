@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  foods Foods[] // relation to Foods (one-to-many)
+
+  @@map("categories")
+}
+
+model Foods {
+  id           String      @id @default(uuid())
+  name         String
+  categoryId   Int         @map("category_id") // FK
+  price        Float
+  description  String?
+  imageUrl     String      @map("image_url")
+  restaurantId String      @map("restaurant_id") // FK
+  available    Boolean     @default(true)
+  Categories   Categories  @relation(fields: [categoryId], references: [id]) // relation to Categories (one-to-many)
+  Restaurants  Restaurants @relation(fields: [restaurantId], references: [id]) // relation to Restaurants (one-to-many)
+
+  @@map("foods")
+}
+
+model Restaurants {
+  id         String   @id @default(uuid())
+  name       String
+  phone      String
+  address    String
+  imageUrl   String   @map("image_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+  userId     String   @map("user_id")
+  totalOrder Int      @default(0) @map("total_order")
+
+  Foods Foods[] // relation to Foods (one-to-many)
+  Users Users?  @relation(fields: [userId], references: [id])
+
+  @@map("restaurants")
+}
+
+model Users {
+  id        String    @id @default(uuid())
+  name      String
+  gender    Boolean   @default(true) // 1: male - 0: female
+  email     String    @unique
+  password  String
+  phone     String    @unique
+  address   String?
+  roleId    Int       @map("role_id") // FK
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  dob       DateTime?
+
+  // orders Order[]
+
+  Roles       Roles         @relation(fields: [roleId], references: [id]) // relation to Roles (one-to-many)
+  Restaurants Restaurants[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+  RESTAURANT_MANAGER
+  SHIPPER
+  OWNER
+}
+
+model Roles {
+  id    Int     @id @default(autoincrement())
+  name  Role    @default(CUSTOMER) // Use the enum type for the role name
+  users Users[] // relation to Users (one-to-many)
+
+  @@map("roles")
+}
+
+model Invoices {
+  id        String   @id @default(uuid())
+  orderId   Int      @map("order_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  total     Float
+
+  // Order Orders @relation(fields: [orderId], references: [id])
+
+  @@map("invoices")
+}
