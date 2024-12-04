@@ -36,7 +36,7 @@ export default class AuthService {
     return user;
   };
 
-  public generateAccessToken = async (userId: number, role: string) => {
+  public generateAccessToken = async (userId: string, role: string) => {
     try {
       const payload = { userId, role };
       const token = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
@@ -49,7 +49,7 @@ export default class AuthService {
     }
   };
 
-  public generateRefreshToken = async (userId: number, role: string) => {
+  public generateRefreshToken = async (userId: string, role: string) => {
     try {
       const payload = { userId, role };
       const token = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET as string, {

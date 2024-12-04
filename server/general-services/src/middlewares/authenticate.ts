@@ -11,7 +11,7 @@ dotenv.config();
 export const setAuthCookies = async (
   req: Request,
   res: Response,
-  userId: number
+  userId: string
 ): Promise<void> => {
   const authService = new AuthService();
   const user = await prisma.users.findUnique({
@@ -29,8 +29,8 @@ export const setAuthCookies = async (
   if (!user) {
     return;
   }
-  const accessToken = await authService.generateAccessToken(user?.id as number, user?.Roles.name);
-  const refreshToken = await authService.generateRefreshToken(user?.id as number, user?.Roles.name);
+  const accessToken = await authService.generateAccessToken(user.id, user?.Roles.name);
+  const refreshToken = await authService.generateRefreshToken(user.id, user?.Roles.name);
 
   res.cookie("accessToken", accessToken, {
     httpOnly: true,

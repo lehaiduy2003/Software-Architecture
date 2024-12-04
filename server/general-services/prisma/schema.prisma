@@ -23,46 +23,39 @@ model Categories {
 }
 
 model Foods {
-  id           Int     @id @default(autoincrement())
+  id           String      @id @default(uuid())
   name         String
-  categoryId   Int     @map("category_id") // FK
+  categoryId   Int         @map("category_id") // FK
   price        Float
   description  String?
-  restaurantId Int     @map("restaurant_id") // FK
-
-  Categories  Categories   @relation(fields: [categoryId], references: [id]) // relation to Categories (one-to-many)
-  Restaurants Restaurants  @relation(fields: [restaurantId], references: [id]) // relation to Restaurants (one-to-many)
-  FoodImages  FoodImages[] // relation to FoodImages (one-to-many)
+  imageUrl     String      @map("image_url")
+  restaurantId String      @map("restaurant_id") // FK
+  available    Boolean     @default(true)
+  Categories   Categories  @relation(fields: [categoryId], references: [id]) // relation to Categories (one-to-many)
+  Restaurants  Restaurants @relation(fields: [restaurantId], references: [id]) // relation to Restaurants (one-to-many)
 
   @@map("foods")
 }
 
-model FoodImages {
-  id       Int    @id @default(autoincrement())
-  foodId   Int    @map("food_id") // FK
-  imageUrl String @map("image_url")
-
-  Foods Foods @relation(fields: [foodId], references: [id]) // relation to Foods (one-to-many)
-
-  @@map("food_images")
-}
-
 model Restaurants {
-  id        Int      @id @default(autoincrement())
-  name      String
-  phone     String
-  address   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-  userId    Int      @map("user_id")
+  id         String   @id @default(uuid())
+  name       String
+  phone      String
+  address    String
+  imageUrl   String   @map("image_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("updated_at")
+  userId     String   @map("user_id")
+  totalOrder Int      @default(0) @map("total_order")
 
   Foods Foods[] // relation to Foods (one-to-many)
+  Users Users?  @relation(fields: [userId], references: [id])
 
   @@map("restaurants")
 }
 
 model Users {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(uuid())
   name      String
   gender    Boolean   @default(true) // 1: male - 0: female
   email     String    @unique
@@ -76,41 +69,30 @@ model Users {
 
   // orders Order[]
 
-  Roles Roles @relation(fields: [roleId], references: [id]) // relation to Roles (one-to-many)
+  Roles       Roles         @relation(fields: [roleId], references: [id]) // relation to Roles (one-to-many)
+  Restaurants Restaurants[]
 
   @@map("users")
 }
 
+enum Role {
+  ADMIN
+  CUSTOMER
+  RESTAURANT_MANAGER
+  SHIPPER
+  OWNER
+}
+
 model Roles {
-  id               Int                @id @default(autoincrement())
-  name             String
-  users            Users[] // relation to Users (one-to-many)
-  RolesPermissions RolesPermissions[] // relation to RolesPermissions (many-to-many)
+  id    Int     @id @default(autoincrement())
+  name  Role    @default(CUSTOMER) // Use the enum type for the role name
+  users Users[] // relation to Users (one-to-many)
 
   @@map("roles")
 }
 
-model Permissions {
-  id               Int                @id @default(autoincrement())
-  name             String
-  RolesPermissions RolesPermissions[] // relation to RolesPermissions (many-to-many)
-
-  @@map("permissions")
-}
-
-model RolesPermissions {
-  id           Int @id @default(autoincrement())
-  roleId       Int @map("role_id") // FK
-  permissionId Int @map("permission_id") // FK
-
-  Roles       Roles       @relation(fields: [roleId], references: [id]) // relation to Roles (many-to-many)
-  Permissions Permissions @relation(fields: [permissionId], references: [id]) // relation to Permissions (many-to-many)
-
-  @@map("roles_permissions")
-}
-
 model Invoices {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   orderId   Int      @map("order_id")
   createdAt DateTime @default(now()) @map("created_at")
   total     Float

@@ -51,7 +51,7 @@ export default class FoodService {
       data,
     });
   }
-  public getFoodById = async (id: number) => {
+  public getFoodById = async (id: string) => {
     const f = await prisma.foods.findUnique({
       where: {
         id: id,
@@ -59,7 +59,7 @@ export default class FoodService {
     });
     return f;
   };
-  public updateFood = async (id: number, data: any) => {
+  public updateFood = async (id: string, data: any) => {
     const f = await prisma.foods.update({
       where: {
         id: id,
@@ -69,7 +69,7 @@ export default class FoodService {
     return f;
   };
 
-  public deleteFood = async (id: number) => {
+  public deleteFood = async (id: string) => {
     const f = await prisma.foods.delete({
       where: {
         id: id,

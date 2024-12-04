@@ -8,14 +8,11 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
-# Install ts-node globally
-RUN npm install -g ts-node
-
 # Copy the application files
 COPY . .
 
+# Generate Prisma client
+RUN npx prisma generate
+
 # Expose the port for the service
 EXPOSE 3001
-
-# Command to run the application
-CMD ["npm", "run", "dev"]

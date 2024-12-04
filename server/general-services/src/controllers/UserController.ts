@@ -24,7 +24,7 @@ export default class UserController extends BaseController {
 
   public getUserById = async (req: Request, res: Response) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.params.userId;
       const user = await this.userService.getUserById(userId);
       if (!user) {
         return this.sendResponse(res, 400, { success: false, result: {} });

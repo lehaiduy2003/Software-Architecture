@@ -26,7 +26,7 @@ export default class FoodController extends BaseController {
 
   public getFoodById = async (req: Request, res: Response) => {
     try {
-      const foodId = parseInt(req.params.foodId);
+      const foodId = req.params.foodId;
       const food = await this.foodService.getFoodById(foodId);
       if (!food) {
         return this.sendResponse(res, 400, { success: false, result: {} });
@@ -53,7 +53,7 @@ export default class FoodController extends BaseController {
 
   public updateFood = async (req: Request, res: Response) => {
     try {
-      const foodId = parseInt(req.params.foodId);
+      const foodId = req.params.foodId;
       const data = req.body;
       const food = await this.foodService.updateFood(foodId, data);
       if (!food) {
@@ -68,7 +68,7 @@ export default class FoodController extends BaseController {
 
   public deleteFood = async (req: Request, res: Response) => {
     try {
-      const foodId = parseInt(req.params.foodId);
+      const foodId = req.params.foodId;
       const food = await this.foodService.deleteFood(foodId);
       if (!food) {
         return this.sendResponse(res, 400, { success: false, message: "Failed to delete food" });

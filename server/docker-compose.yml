@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   rabbitmq:
-    image: "rabbitmq:3-management"
+    image: rabbitmq:3-management
+    container_name: rabbitmq
     ports:
       - "5673:5672"    # RabbitMQ server port
       - "15673:15672"  # RabbitMQ management UI
@@ -17,12 +18,15 @@ services:
       retries: 3
 
   mysql:
-    image: "mysql:8.0.40"
+    image: mysql:8.0.40
+    container_name: mysql
     ports:
       - "3307:3306"
     volumes:
       - mysql-volume:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
     environment:
       MYSQL_ROOT_PASSWORD: mysql
     healthcheck:
@@ -31,6 +35,7 @@ services:
       retries: 3
 
   order-service:
+    container_name: order-service
     build:
       context: ./order-service
     ports:
@@ -46,7 +51,15 @@ services:
       - ./order-service/.env
     volumes:
       - ./order-service:/app
+    command: >
+      sh -c "npx prisma migrate deploy && npm run dev"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 5s
+      timeout: 20s
+      retries: 3
   general-services:
+    container_name: general-services
     build:
       context: ./general-services
     ports:
@@ -56,14 +69,22 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-    env_file:
-      - ./general-services/.env
     networks:
       - app-network
+    env_file:
+      - ./general-services/.env
     volumes:
       - ./general-services:/app
+    command: >
+      sh -c "npx prisma migrate deploy && npm run seed && npm run dev"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 5s
+      timeout: 20s
+      retries: 3
 
   gateway:
+    container_name: gateway
     build:
       context: ./gateway
     ports:

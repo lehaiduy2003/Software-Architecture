@@ -5,7 +5,7 @@ export default class UserService {
     return [];
   };
 
-  public getUserById = async (userId: number) => {
+  public getUserById = async (userId: string) => {
     const user = await prisma.users.findUnique({
       where: {
         id: userId, // Replace with your user id

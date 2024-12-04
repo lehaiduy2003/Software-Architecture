@@ -6,6 +6,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express-gateway": "^1.16.11",
     "express-gateway-plugin-auth": "^1.1.1"
   }
