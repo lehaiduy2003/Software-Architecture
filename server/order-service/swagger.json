@@ -5,11 +5,11 @@
     "title": "Order Service API",
     "description": "API documentation for the Order Service"
   },
-  "host": "localhost:3000",
-  "basePath": "/api",
+  "host": "localhost:3002",
+  "basePath": "/api/v1",
   "schemes": ["http"],
   "paths": {
-    "/orders": {
+    "/": {
       "get": {
         "summary": "Get all orders",
         "responses": {
