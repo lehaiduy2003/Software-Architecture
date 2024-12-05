@@ -1,4 +1,6 @@
 import UserController from "../controllers/UserController";
+import { authenticate } from "../middlewares/authenticate";
+import { authorize } from "../middlewares/authorize";
 import UserService from "../services/UserService";
 import { BaseRoute } from "../utils/BaseRoute";
 
@@ -12,11 +14,10 @@ class UserRoute extends BaseRoute {
   }
 
   private initRoutes() {
-    this.router.get("/users", this.userController.getAllUsers);
-    this.router.get("/users/:userId", this.userController.getUserById);
-    // this.router.post("/", this.userController.createUser);
-    // this.router.put("/:userId", this.userController.updateUser);
-    // this.router.delete("/:userId", this.userController.deleteUser);
+    this.router.get("/users", authenticate, this.userController.getAllUsers);
+    this.router.get("/users/:userId", authenticate, this.userController.getUserById);
+    this.router.put("/", authenticate, this.userController.updateUser);
+    this.router.delete("/:userId", authenticate, authorize([""]), this.userController.deleteUser);
   }
 }
 

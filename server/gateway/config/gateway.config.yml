@@ -17,9 +17,9 @@ serviceEndpoints:
   httpbin:
     url: "https://httpbin.org"
   orderService:
-    url: http://order-service:3002/api/v1
+    url: http://localhost:3002/api/v1
   generalServices:
-    url: http://general-services:3001/api/v1
+    url: http://localhost:3001/api/v1
 policies:
   - basic-auth
   - cors
