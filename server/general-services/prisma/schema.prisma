@@ -94,7 +94,7 @@ model Roles {
 
 model Invoices {
   id        String   @id @default(uuid())
-  orderId   Int      @map("order_id")
+  orderId   String   @map("order_id")
   createdAt DateTime @default(now()) @map("created_at")
   total     Float
 

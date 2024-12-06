@@ -7,6 +7,13 @@ import prisma from "../../prisma/database";
 dotenv.config();
 
 export default class InvoiceService {
+  async getInvoiceById(invoiceId: string) {
+    return await prisma.invoices.findUnique({
+      where: {
+        id: invoiceId,
+      },
+    });
+  }
   private channel!: amqp.Channel;
 
   constructor() {
@@ -48,9 +55,19 @@ export default class InvoiceService {
 
   async processInvoice(invoice: any) {
     // Implement your invoice processing logic here
-    await prisma.invoices.create({
-      data: invoice,
-    });
+    await this.createInvoice(invoice);
     console.log("Invoice processed:", invoice);
+  }
+
+  private async createInvoice(data: any) {
+    const invoice = await prisma.invoices.create({
+      data: data,
+    });
+
+    return invoice;
+  }
+
+  async getInvoices() {
+    return await prisma.invoices.findMany();
   }
 }
