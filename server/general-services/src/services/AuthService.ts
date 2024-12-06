@@ -2,6 +2,7 @@ import { log } from "console";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import prisma from "../../prisma/database";
+import { ERoles } from "../utils/interfaces/IUser";
 dotenv.config();
 
 export default class AuthService {
@@ -30,7 +31,7 @@ export default class AuthService {
         name: fullName,
         password: password,
         email: email,
-        roleId: 3,
+        roleId: ERoles.CUSTOMER,
       },
     });
     return user;

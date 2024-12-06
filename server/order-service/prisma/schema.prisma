@@ -14,15 +14,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OrderStatus {
+  PENDING
+  COOKING
+  DELIVERING
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+}
+
 // Microservices
 model Orders {
-  id            Int      @id @default(autoincrement())
-  userId        Int      @map("user_id")
-  status        String
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @default(now()) @map("updated_at")
-  paymentMethod String   @map("payment_method")
-  paymentStatus String   @map("payment_status")
+  id            String        @id @default(uuid())
+  userId        String        @map("user_id")
+  status        OrderStatus   @default(PENDING)
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @default(now()) @map("updated_at")
+  paymentMethod PaymentMethod @default(CASH) @map("payment_method")
+  paymentStatus PaymentStatus @default(PENDING) @map("payment_status")
 
   // user       User        @relation(fields: [userId], references: [id])
   OrderItems OrderItems[] // relation to OrderItems (one-to-many)
@@ -32,9 +51,9 @@ model Orders {
 }
 
 model OrderItems {
-  id       Int @id @default(autoincrement())
-  foodId   Int @map("food_id")
-  orderId  Int @map("order_id") // FK
+  id       String @id @default(uuid())
+  foodId   String @map("food_id")
+  orderId  String @map("order_id") // FK
   quantity Int
 
   Orders Orders @relation(fields: [orderId], references: [id]) // relation to Orders (one-to-many)

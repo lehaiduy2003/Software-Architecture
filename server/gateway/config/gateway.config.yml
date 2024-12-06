@@ -9,7 +9,7 @@ apiEndpoints:
     paths: "/ip"
   orderService:
     host: localhost
-    paths: ["/order/*"]
+    paths: ["/order/*", "/order"]
   generalServices:
     host: localhost
     paths: ["/general/*"]

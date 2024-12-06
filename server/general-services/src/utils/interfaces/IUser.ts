@@ -19,9 +19,26 @@ export interface IRole {
 }
 
 export enum ERoles {
-    ADMIN = "ADMIN",
-    CUSTOMER = "CUSTOMER",
-    RESTAURANT_MANAGER = "RESTAURANT_MANAGER",
-    SHIPPER = "SHIPPER",
-    OWNER = "OWNER"
+    ADMIN = 1,
+    CUSTOMER = 2,
+    RESTAURANT_MANAGER = 3,
+    SHIPPER = 4,
+    OWNER = 5
+}
+
+export function getRoleLabel(role: ERoles): string {
+    switch (role) {
+        case ERoles.ADMIN:
+            return 'ADMIN';
+        case ERoles.CUSTOMER:
+            return 'CUSTOMER';
+        case ERoles.RESTAURANT_MANAGER:
+            return 'RESTAURANT_MANAGER';
+        case ERoles.SHIPPER:
+            return 'SHIPPER';
+        case ERoles.OWNER:
+            return 'OWNER';
+        default:
+            return 'Unknown Role';
+    }
 }

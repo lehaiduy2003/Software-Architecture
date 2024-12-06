@@ -5,8 +5,8 @@
     "title": "General Services API",
     "description": "API documentation for the General Services"
   },
-  "host": "localhost:3000",
-  "basePath": "/api",
+  "host": "localhost:3001",
+  "basePath": "/api/v1",
   "schemes": ["http"],
   "paths": {
     "/foods": {

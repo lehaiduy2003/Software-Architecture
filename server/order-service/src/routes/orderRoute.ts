@@ -1,9 +1,28 @@
 import { Router } from "express";
-import { orderController } from "../controllers/OrderController";
+import { OrderController } from "../controllers/OrderController";
+import { BaseRoute } from "../utils/BaseRoute";
 
-const router = Router();
+class OrderRouter extends BaseRoute {
+  private readonly orderController: OrderController;
 
-router.get("/", orderController.getOrderList);
-router.post("/", orderController.createOrder);
+  constructor(orderController: OrderController) {
+    super();
+    this.orderController = orderController;
+    this.router = Router();
+    this.autoBindControllerMethods(this.orderController);
+    this.initRoutes();
+  }
 
-export { router as orderRoutes };
+  private initRoutes() {
+    this.router.get("/", this.orderController.getOrderList);
+    this.router.get("/:orderId", this.orderController.getOrderById);
+    this.router.post("/", this.orderController.createOrder);
+  }
+}
+
+const createOrderRoute = () => {
+  const orderController = new OrderController();
+  return new OrderRouter(orderController);
+};
+
+export default createOrderRoute;

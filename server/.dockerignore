@@ -10,7 +10,7 @@ npm-debug.log*
 .env
 
 # Ignore build files
-dist
+# dist (do not ignore dist as it contains the compiled code)
 build
 
 # Ignore Docker files

@@ -1,29 +1,29 @@
-import { ERoles } from "./interfaces/IUser";
+import { ERoles, getRoleLabel } from "./interfaces/IUser";
 
-export const RolePermissions: Record<ERoles, string[]> = {
-    [ERoles.ADMIN]: [
+export const RolePermissions: Record<string, string[]> = {
+    [getRoleLabel(ERoles.ADMIN)]: [
         "create",
         "read",
         "update",
         "delete"
     ],
 
-    [ERoles.RESTAURANT_MANAGER]: [
+    [getRoleLabel(ERoles.RESTAURANT_MANAGER)]: [
         "create",
         "read",
         "update",
         "delete"
     ],
 
-    [ERoles.CUSTOMER]: [
+    [getRoleLabel(ERoles.CUSTOMER)]: [
         "read"
     ],
 
-    [ERoles.SHIPPER]: [
+    [getRoleLabel(ERoles.SHIPPER)]: [
         "read"
     ],
 
-    [ERoles.OWNER]: [
+    [getRoleLabel(ERoles.OWNER)]: [
         "read"
     ]
 };
