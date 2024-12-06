@@ -40,15 +40,16 @@ class OrderService {
   }
 
   // Create an order and send it to RabbitMQ
-  async createOrder(data: Order, foods: OrderedFood[]) {
+  async createOrder(data: Order, foods: OrderedFood[], restaurantId: string) {
     const order = await prisma.orders.create({
       data,
     });
 
-    let total = 0;
-    
+    let totalPrice = 0;
+    let totalOrder = 0;
     const orderItems = foods.map((food) => {
-      total += food.price * food.quantity;
+      totalPrice += food.price * food.quantity;
+      totalOrder++;
       return {
         orderId: order.id,
         foodId: food.id,
@@ -61,10 +62,11 @@ class OrderService {
       data: orderItems,
     });
 
-    const invoice = validateInvoice({ orderId: order.id, total });
+    const invoice = validateInvoice({ orderId: order.id, total: totalPrice });
 
     /// Send the invoice to the Invoice Consumer
     await this.sendInvoiceToConsumer(invoice);
+    await this.sendToRestaurant(restaurantId, totalOrder);
 
     return order;
   }
@@ -77,8 +79,8 @@ class OrderService {
     console.log("Invoice sent to Invoice Service");
   }
 
-  async sendToRestaurant(id: string, orderData: any) {
-    const orderMessage = JSON.stringify(orderData);
+  async sendToRestaurant(id: string, totalOrder: number) {
+    const orderMessage = JSON.stringify({ id, totalOrder });
     this.channel.sendToQueue("restaurant-queue", Buffer.from(orderMessage), { persistent: true });
     console.log("Order sent to Restaurant Service");
   }

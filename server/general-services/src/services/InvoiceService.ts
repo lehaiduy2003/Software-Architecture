@@ -38,7 +38,7 @@ export default class InvoiceService {
     }
   }
 
-  async consumeMessages() {
+  consumeMessages() {
     this.channel.consume("invoice-queue", async (msg: any) => {
       if (msg !== null) {
         const invoice = JSON.parse(msg.content.toString());

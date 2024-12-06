@@ -35,10 +35,10 @@ services:
       retries: 3
 
   order-service:
-    # image: lehaiduy2003/server-order-service:latest
+    image: lehaiduy2003/server-order-service:latest
     # uncomment the line below to use local image for development
-    build:
-      context: ./order-service
+    # build:
+    #   context: ./order-service
     ports:
       - "3002:3002"
     depends_on:
@@ -53,12 +53,12 @@ services:
     volumes:
       - ./order-service:/app
     command: >
-      sh -c "npx prisma migrate deploy && npm run dev"
+      sh -c "npx prisma migrate deploy && npm start"
   general-services:
-    # image: lehaiduy2003/server-general-services:latest
+    image: lehaiduy2003/server-general-services:latest
     # uncomment the line below and comment the above line to use local image for development
-    build:
-      context: ./general-services
+    # build:
+    #   context: ./general-services
     ports:
       - "3001:3001"
     depends_on:
@@ -73,13 +73,13 @@ services:
     volumes:
       - ./general-services:/app
     command: >
-      sh -c "npx prisma migrate deploy && npm run seed && npm run dev"
+      sh -c "npx prisma migrate deploy && npm run seed && npm start"
 
   gateway:
-    # image: lehaiduy2003/server-gateway:latest
+    image: lehaiduy2003/server-gateway:latest
     # uncomment the line below and comment the above line to use local image for development
-    build:
-      context: ./gateway
+    # build:
+    #   context: ./gateway
     ports:
       - "8080:8080"
     depends_on:

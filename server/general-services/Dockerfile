@@ -14,6 +14,9 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
+# Build the TypeScript code
+RUN npm run build
+
 # Stage 2: Alpine Runtime
 FROM node:20-alpine
 # install OpenSSL and other dependencies for the prisma client
