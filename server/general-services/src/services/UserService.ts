@@ -1,4 +1,5 @@
 import prisma from "../../prisma/database";
+import { User } from "../libs/zod/types/UserValidates";
 
 export default class UserService {
   public getAllUsers = async () => {
@@ -23,4 +24,23 @@ export default class UserService {
     }
     return user;
   };
+
+  public updateUser = async (userId: string, data: User) => {
+    return await prisma.users.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...data,
+      },
+    });
+  }
+
+  public deleteUser = async (userId: string) => {
+    return await prisma.users.delete({
+      where: {
+        id: userId,
+      },
+    });
+  }
 }

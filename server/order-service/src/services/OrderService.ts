@@ -46,6 +46,7 @@ class OrderService {
     });
 
     let total = 0;
+    
     const orderItems = foods.map((food) => {
       total += food.price * food.quantity;
       return {
@@ -64,6 +65,7 @@ class OrderService {
 
     /// Send the invoice to the Invoice Consumer
     await this.sendInvoiceToConsumer(invoice);
+
     return order;
   }
 
@@ -73,6 +75,12 @@ class OrderService {
       persistent: true,
     });
     console.log("Invoice sent to Invoice Service");
+  }
+
+  async sendToRestaurant(id: string, orderData: any) {
+    const orderMessage = JSON.stringify(orderData);
+    this.channel.sendToQueue("restaurant-queue", Buffer.from(orderMessage), { persistent: true });
+    console.log("Order sent to Restaurant Service");
   }
 
   // Fetch all orders
