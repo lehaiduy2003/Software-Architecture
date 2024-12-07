@@ -1,34 +1,56 @@
-import React from 'react'
+"use client";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
   return (
-    <form className="w-full max-w-sm space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full max-w-sm space-y-4"
+    >
       <div>
         <label
           className="block text-sm font-medium text-gray-700"
           htmlFor="email"
         >
-          Email
+          Phone
         </label>
         <input
-          type="email"
           id="email"
-          placeholder="Example@email.com"
+          {...register("phone", {
+            required: "Phone is required",
+            pattern: {
+              value: /^[0-9\b]+$/,
+              message: "Phone must be number",
+            },
+          })}
+          placeholder="032xxxxxxx"
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {errors.phone && (
+          <p className="text-red-500 text-sm mt-1">Phone Invalid</p>
+        )}
       </div>
 
       <div>
         <label
           className="block text-sm font-medium text-gray-700"
-          htmlFor="password"
+          htmlFor="fullname"
         >
-          Username
+          Full Name
         </label>
         <input
           type="text"
           id="password"
-          placeholder="At least 8 characters"
+          placeholder="John Smith"
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -70,6 +92,6 @@ const Register = () => {
       </button>
     </form>
   );
-}
+};
 
-export default Register
+export default Register;

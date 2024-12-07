@@ -56,7 +56,7 @@ const restaurants = [
     name: "Sushi Master",
     image: "/images/restaurant.jpg",
     rating: 4.8,
-    reviewCount: 350,
+    reviewCount: 300,
     isOpen: false,
     promotion: "Weekend Special",
     cuisine: "Japanese",
@@ -66,7 +66,7 @@ const restaurants = [
     name: "Sushi Master",
     image: "/images/restaurant.jpg",
     rating: 4.8,
-    reviewCount: 350,
+    reviewCount: 35,
     isOpen: false,
     promotion: "Weekend Special",
     cuisine: "Japanese",
@@ -76,7 +76,7 @@ const restaurants = [
     name: "Delicious Pizza Palace",
     image: "/images/restaurant.jpg",
     rating: 4.5,
-    reviewCount: 500,
+    reviewCount: 45,
     isOpen: true,
     promotion: "20% Off First Order",
     cuisine: "Italian",
@@ -86,7 +86,7 @@ const restaurants = [
     name: "Delicious Pizza Palace",
     image: "/images/restaurant.jpg",
     rating: 4.5,
-    reviewCount: 500,
+    reviewCount: 50,
     isOpen: true,
     promotion: "20% Off First Order",
     cuisine: "Italian",
@@ -96,7 +96,7 @@ const restaurants = [
 
 const RestaurantListingsPage = () => {
   return (
-    <div>
+    <div className="mt-20">
       <Header />
       <div className="container mx-auto px-4 py-8 space-y-8">
         {/* Featured Food Carousel */}
