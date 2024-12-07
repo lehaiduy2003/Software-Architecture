@@ -51,14 +51,14 @@ const FeaturedRestaurants = () => {
           {restaurants.map((restaurant) => (
             <CarouselItem
               key={restaurant.id}
-              className="md:basis-1/2 lg:basis-1/3"
+              className="md:basis-1/2 lg:basis-1/3 bg-[#f1f1f1] rounded-t-2xl"
             >
               <Card className="h-full">
                 <div className="relative w-full h-48 mb-4 overflow-hidden">
                   <img
                     src={restaurant.image}
                     alt={restaurant.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-t-2xl"
                   />
                 </div>
                 <CardContent className="p-4">
@@ -67,7 +67,7 @@ const FeaturedRestaurants = () => {
                     {restaurant.cuisine} Cuisine
                   </p>
                   <p className="mt-2 text-sm">{restaurant.description}</p>
-                  <Button className="mt-4 w-full">View Restaurant</Button>
+                  <Button className="mt-4 w-full font-bold">View Restaurant</Button>
                 </CardContent>
               </Card>
             </CarouselItem>

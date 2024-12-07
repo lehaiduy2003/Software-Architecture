@@ -1,10 +1,26 @@
 import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Star } from "lucide-react";
 
 const RestaurantCard = ({ restaurant }: any) => {
   return (
-    <Card className="w-full hover:shadow-lg transition-all duration-300">
+    <Card
+      className="w-full 
+      transition-all 
+      duration-300 
+      ease-in-out 
+      cursor-pointer 
+      hover:scale-105 
+      hover:shadow-2xl 
+      hover:border-gray-200 
+      border 
+      border-transparent"
+    >
       <div className="relative">
         <img
           src={restaurant.image}

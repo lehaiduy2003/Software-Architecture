@@ -22,22 +22,22 @@ const SignInPage = () => {
           className="block text-sm font-medium text-gray-700"
           htmlFor="email"
         >
-          Email
+          Phone
         </label>
         <input
           id="email"
-          {...register("email", {
-            required: "Email is required",
+          {...register("phone", {
+            required: "Phone is required",
             pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-              message: "Invalid email address",
+              value: /^[0-9\b]+$/,
+              message: "Phone must be number",
             },
           })}
-          placeholder="Example@email.com"   
+          placeholder="032xxxxxxx"   
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">Email Invalid</p>
+        {errors.phone && (
+          <p className="text-red-500 text-sm mt-1">Phone Invalid</p>
         )}
       </div>
 
