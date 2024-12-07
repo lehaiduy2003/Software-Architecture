@@ -1,4 +1,4 @@
-import { sendEmail } from './../utils/mailer';
+import { sendEmail } from "./../utils/mailer";
 import { log } from "console";
 import crypto from "crypto";
 import { Request, Response, NextFunction } from "express";
@@ -26,21 +26,37 @@ export default class AuthController extends BaseController {
 
       const { phoneNumber, fullName, password, email } = req.body;
       if (!phoneNumber || !fullName || !password || !email) {
-        return this.sendError(res, 400, "Phone number, email, full name and password are required");
+        return this.sendError(
+          res,
+          400,
+          "Phone number, email, full name and password are required"
+        );
       }
 
-      const user = await this.authService.register(email, phoneNumber, fullName, password);
+      const user = await this.authService.register(
+        email,
+        phoneNumber,
+        fullName,
+        password
+      );
       if (!user) {
         return this.sendError(res, 400, "Failed to register");
       }
-      // Save the IP address to the user's login history (assuming you have a service for this)
-      const ipAddress = req.ip;
-      const userAgent = req.headers["user-agent"];
+      // // Save the IP address to the user's login history (assuming you have a service for this)
+      // const ipAddress = req.ip;
+      // const userAgent = req.headers["user-agent"];
 
       // Lưu thông tin đăng nhập vào bảng LoginHistory
-      await this.authService.saveLoginHistory(user.id, userAgent as string, ipAddress as string);
+      // await this.authService.saveLoginHistory(
+      //   user.id,
+      //   userAgent as string,
+      //   ipAddress as string
+      // );
       await setAuthCookies(req, res, user.id);
-      return this.sendResponse(res, 201, { success: true, message: "Registered successfully" });
+      return this.sendResponse(res, 201, {
+        success: true,
+        message: "Registered successfully",
+      });
     } catch (error) {
       this.sendError(res, 500, "Internal server error");
       throw error;
@@ -52,7 +68,11 @@ export default class AuthController extends BaseController {
       const { phoneNumber, password } = req.body;
 
       if (!phoneNumber || !password) {
-        return this.sendError(res, 400, "Phone number and password are required");
+        return this.sendError(
+          res,
+          400,
+          "Phone number and password are required"
+        );
       }
 
       const user = await this.authService.getUserByPhoneNumber(phoneNumber);
@@ -66,38 +86,42 @@ export default class AuthController extends BaseController {
         return this.sendError(res, 401, "Invalid phone number or password");
       }
 
-      const userAgent = req.headers["user-agent"];
-      const ipAddress = req.ip;
+      // const userAgent = req.headers["user-agent"];
+      // const ipAddress = req.ip;
 
-      console.log("userAgent: ", userAgent);
-      console.log("IP Address: ", ipAddress);
+      // console.log("userAgent: ", userAgent);
+      // console.log("IP Address: ", ipAddress);
 
-      const history = await this.authService.getLoginHistory(user.id);
+      // const history = await this.authService.getLoginHistory(user.id);
 
-      if (history.ipAddress == ipAddress && history.userAgent == userAgent) {
-        // Lưu thông tin đăng nhập vào bảng LoginHistory
-        await this.authService.saveLoginHistory(user.id, userAgent as string, ipAddress as string);
-        await setAuthCookies(req, res, user.id);
-        return this.sendResponse(res, 200, { success: true, message: "Logged in successfully" });
-      }
+      // if (history.ipAddress == ipAddress && history.userAgent == userAgent) {
+      //   // Lưu thông tin đăng nhập vào bảng LoginHistory
+      //   await this.authService.saveLoginHistory(user.id, userAgent as string, ipAddress as string);
 
-      // Nếu phát hiện sự khác biệt về IP/Browser, gửi mã OTP xác thực
-      log("Unusual login detected. Sending OTP to email...");
-      const otp = crypto.randomInt(1000, 9999).toString(); // Tạo OTP 4 chữ số
-
-      // Lưu mã OTP vào Redis với thời gian hết hạn là 5 phút
-      await redisClient.setEx(`otp:${user.phone}`, 300, otp);
-
-      // Lưu thông tin người dùng vào session
-      (req as any).session.userPhone = user.phone;
-
-      // Gửi OTP qua email
-      await sendEmail(user.email, 'OTP for Login Verification', `Your OTP is: ${otp}. It will expire in 5 minutes.`);
-
-      return this.sendResponse(res, 401, {
-        success: false,
-        message: "Unusual login detected. Please enter the OTP sent to your email."
+      // }
+      await setAuthCookies(req, res, user.id);
+      return this.sendResponse(res, 200, {
+        success: true,
+        message: "Logged in successfully",
       });
+
+      // // Nếu phát hiện sự khác biệt về IP/Browser, gửi mã OTP xác thực
+      // log("Unusual login detected. Sending OTP to email...");
+      // const otp = crypto.randomInt(1000, 9999).toString(); // Tạo OTP 4 chữ số
+
+      // // Lưu mã OTP vào Redis với thời gian hết hạn là 5 phút
+      // await redisClient.setEx(`otp:${user.phone}`, 300, otp);
+
+      // // Lưu thông tin người dùng vào session
+      // (req as any).session.userPhone = user.phone;
+
+      // // Gửi OTP qua email
+      // await sendEmail(user.email, 'OTP for Login Verification', `Your OTP is: ${otp}. It will expire in 5 minutes.`);
+
+      // return this.sendResponse(res, 401, {
+      //   success: false,
+      //   message: "Unusual login detected. Please enter the OTP sent to your email."
+      // });
     } catch (error) {
       this.sendError(res, 500, "Internal server error");
       throw error;
@@ -129,7 +153,10 @@ export default class AuthController extends BaseController {
 
       // Kiểm tra mã OTP nhập vào có khớp không
       if (Number(storedOtp) !== otp) {
-        return this.sendResponse(res, 400, { success: false, message: "Invalid OTP" });
+        return this.sendResponse(res, 400, {
+          success: false,
+          message: "Invalid OTP",
+        });
       }
 
       // Đăng nhập thành công, set cookie và trả về phản hồi
@@ -140,7 +167,10 @@ export default class AuthController extends BaseController {
       // Xóa mã OTP khỏi Redis sau khi sử dụng
       await redisClient.del(`otp:${userPhone}`);
 
-      return this.sendResponse(res, 200, { success: true, message: "Login verified successfully" });
+      return this.sendResponse(res, 200, {
+        success: true,
+        message: "Login verified successfully",
+      });
     } catch (error) {
       this.sendError(res, 500, "Internal server error");
       throw error;
