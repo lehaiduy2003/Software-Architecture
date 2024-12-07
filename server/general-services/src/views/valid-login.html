@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .otp-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .otp-input {
+      width: 100px;
+      height: 40px;
+      text-align: center;
+      font-size: 20px;
+      margin: 5px;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .otp-input:focus {
+      border-color: #007bff;
+    }
+
+    .button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .button:disabled {
+      background-color: #ccc;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="otp-container">
+    <h2>Enter OTP</h2>
+    <label for="otpInput">OTP:</label>
+    <input type="text" id="otpInput" class="otp-input" maxlength="4" placeholder="Enter OTP" />
+    <button id="submitButton" class="button" onclick="verifyOtp()">Verify OTP</button>
+    <div id="errorMessage" class="error" style="display: none;">Invalid OTP, please try again.</div>
+  </div>
+
+  <script>
+    // Kiểm tra và gửi mã OTP đến server
+    async function verifyOtp() {
+      const otp = document.getElementById('otpInput').value;
+
+      // Kiểm tra nếu mã OTP có đủ 4 chữ số
+      if (otp.length !== 4 || isNaN(otp)) {
+        document.getElementById("errorMessage").style.display = "block";
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8080/general/auth/valid-login', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ otp }),
+        });
+
+        const result = await response.json();
+        console.log('Result:', result);
+        if (result.success === false || response.status !== 200) {
+          // Redirect về trang home nếu mã OTP không hợp lệ
+          window.location.href = 'http://localhost:8080/general/auth/f-login';
+        } else if (response.status !== 401) {
+          // Đăng nhập thành công, chuyển hướng đến trang dashboard hoặc trang khác
+          window.location.href = 'http://localhost:8080/general/auth/f-success';
+        }
+      } catch (error) {
+        console.error('Error verifying OTP:', error);
+        document.getElementById("errorMessage").style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+
+</html>

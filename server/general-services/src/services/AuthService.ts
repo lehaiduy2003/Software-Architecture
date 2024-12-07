@@ -3,17 +3,22 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import prisma from "../../prisma/database";
 import { ERoles } from "../utils/interfaces/IUser";
+import { comparePassword, encode } from "../utils/encoded";
+import redisClient from "../config/redisClient";
 dotenv.config();
 
 export default class AuthService {
   public login = async (phoneNumber: string, password: string) => {
     const user = await prisma.users.findUnique({
       where: {
-        phone: phoneNumber,
-        password: password,
+        phone: phoneNumber
       },
     });
     if (!user) {
+      return null;
+    }
+    const isPasswordMatch = await comparePassword(password, user.password);
+    if (!isPasswordMatch) {
       return null;
     }
     return user;
@@ -25,17 +30,46 @@ export default class AuthService {
     fullName: string,
     password: string
   ) => {
+    const hashedPassword = await encode(password);
     const user = await prisma.users.create({
       data: {
         phone: phoneNumber,
         name: fullName,
-        password: password,
+        password: hashedPassword,
         email: email,
         roleId: ERoles.CUSTOMER,
       },
     });
     return user;
   };
+
+  public saveLoginHistory = async (userId: string, agentUser: string, ipAddress: string) => {
+    // Check nếu đã tồn tại userId thì cập nhật lại, ngược lại thì tạo mới
+    const loginHistory = await prisma.loginHistory.findMany({
+      where: {
+        userId: userId,
+      },
+    });
+    if (loginHistory.length > 0) {
+      await prisma.loginHistory.update({
+        where: {
+          id: loginHistory[0].id,
+        },
+        data: {
+          userAgent: agentUser,
+          ipAddress: ipAddress,
+        },
+      });
+    } else {
+      await prisma.loginHistory.create({
+        data: {
+          userId: userId,
+          userAgent: agentUser,
+          ipAddress: ipAddress,
+        },
+      });
+    }
+  }
 
   public generateAccessToken = async (userId: string, role: string) => {
     try {
@@ -62,4 +96,22 @@ export default class AuthService {
       throw new Error("Failed to generate refresh token");
     }
   };
+
+  public getUserByPhoneNumber = async (phoneNumber: string) => {
+    const user = await prisma.users.findUnique({
+      where: {
+        phone: phoneNumber
+      }
+    });
+    return user;
+  }
+
+  public getLoginHistory = async (userId: string): Promise<any> => {
+    const loginHistory = await prisma.loginHistory.findMany({
+      where: {
+        userId: userId
+      }
+    });
+    return loginHistory[0];
+  }
 }

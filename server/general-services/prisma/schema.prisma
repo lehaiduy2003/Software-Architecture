@@ -70,10 +70,23 @@ model Users {
 
   // orders Order[]
 
-  Roles       Roles         @relation(fields: [roleId], references: [id]) // relation to Roles (one-to-many)
-  Restaurants Restaurants[]
+  Roles        Roles          @relation(fields: [roleId], references: [id]) // relation to Roles (one-to-many)
+  Restaurants  Restaurants[]
+  LoginHistory LoginHistory[] // Add relation to LoginHistory model
 
   @@map("users")
+}
+
+model LoginHistory {
+  id        String   @id @default(uuid())
+  userId    String // FK to Users table
+  ipAddress String // Store IP address
+  userAgent String // Store User Agent
+  createdAt DateTime @default(now()) @map("created_at")
+
+  User Users @relation(fields: [userId], references: [id]) // Relation to Users
+
+  @@map("login_history")
 }
 
 enum Role {
