@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -8,8 +9,23 @@ const SignInPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    const isLogin = await axios.post(
+      "http://localhost:8080/general/auth/login",
+      {
+        phoneNumber: data.phone,
+        password: data.password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    if (isLogin.data.success) {
+      window.location.href = "/";
+    }
   };
 
   return (
@@ -33,7 +49,7 @@ const SignInPage = () => {
               message: "Phone must be number",
             },
           })}
-          placeholder="032xxxxxxx"   
+          placeholder="032xxxxxxx"
           className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {errors.phone && (
@@ -54,7 +70,7 @@ const SignInPage = () => {
           {...register("password", {
             required: "Password is required",
             minLength: {
-              value: 8,
+              value: 6,
               message: "Password must be at least 8 characters",
             },
           })}

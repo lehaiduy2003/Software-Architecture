@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-container {
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Register</h2>
+    <form id="registerForm">
+      <div class="input-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Enter your phone number" required>
+      </div>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+      <div class="input-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" id="registerBtn">Register</button>
+      <p id="error-message" class="error-message"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      // Get form values
+      const phoneNumber = document.getElementById('phoneNumber').value;
+      const email = document.getElementById('email').value;
+      const fullName = document.getElementById('fullName').value;
+      const password = document.getElementById('password').value;
+      const errorMessage = document.getElementById('error-message');
+
+      // Basic validation
+      if (!phoneNumber || !email || !fullName || !password) {
+        errorMessage.textContent = 'All fields are required';
+        return;
+      }
+
+      // Prepare the data for POST request
+      const data = {
+        phoneNumber: phoneNumber,
+        email: email,
+        fullName: fullName,
+        password: password
+      };
+
+      // Send POST request to the API
+      try {
+        const response = await fetch('http://localhost:8080/general/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        // Check if the response is successful
+        alert("Data: " + data);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success) {
+            window.location.href = 'http://localhost:8080/general/auth/f-login';  // Redirect to login page
+          } else  {
+            errorMessage.textContent = result.message || 'Registration failed';
+          }
+        } else {
+          errorMessage.textContent = 'An error occurred. Please try again later.';
+        }
+      } catch (error) {
+        errorMessage.textContent = 'An error occurred. Please try again later.';
+      }
+    });
+  </script>
+</body>
+</html>

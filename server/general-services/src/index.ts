@@ -9,6 +9,7 @@ import createUsersRoute from "./routes/UserRoute";
 import createStripeRoute from "./routes/StripeRoute";
 import createInvoicesRoute from "./routes/InvoiceRoute";
 import createRestaurantsRoute from "./routes/RestaurantRoute";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
@@ -18,7 +19,14 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false, httpOnly: true, maxAge: 60000 * 60 }
 }));
-app.use(cookieParser());
+app.use(cors(
+  {
+    origin: ["http://localhost:3000", "http://localhost:8080"],
+    credentials: true
+  }
+));
+app.use(cookieParser("hahahahaahahahaahaha"));
+app.set('trust proxy', true);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1/foods", createFoodRoute().getRouter());
 app.use("/api/v1/auth", createAuthRoute().getRouter());
