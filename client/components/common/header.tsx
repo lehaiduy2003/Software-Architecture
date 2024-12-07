@@ -1,6 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
-
+  
 const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-sm py-4 bg-[#1A202C]">
