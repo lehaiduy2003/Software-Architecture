@@ -1,4 +1,6 @@
 import express from "express";
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../swagger.json";
 import createFoodRoute from "./routes/FoodRoute";
@@ -10,7 +12,13 @@ import createRestaurantsRoute from "./routes/RestaurantRoute";
 
 const app = express();
 app.use(express.json());
-
+app.use(session({
+  secret: 'hhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaa',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: true, maxAge: 60000 * 60 }
+}));
+app.use(cookieParser());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1/foods", createFoodRoute().getRouter());
 app.use("/api/v1/auth", createAuthRoute().getRouter());

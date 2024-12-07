@@ -1,6 +1,7 @@
 import prisma from "../../prisma/database";
 import amqp from "amqplib";
 import dotenv from "dotenv";
+import { Food } from "../libs/zod/types/FoodValidation";
 
 dotenv.config();
 
@@ -46,9 +47,10 @@ export default class FoodService {
     return await prisma.foods.findMany();
   }
 
-  async createFood(data: any) {
+  public createFood = async (data: Food) => {
+
     return await prisma.foods.create({
-      data,
+      data: data
     });
   }
   public getFoodById = async (id: string) => {

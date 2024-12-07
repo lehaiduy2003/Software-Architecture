@@ -1,5 +1,5 @@
 import prisma from "../../prisma/database";
-import { User } from "../libs/zod/types/UserValidates";
+import { User } from "../libs/zod/types/UserValidation";
 
 export default class UserService {
   public getAllUsers = async () => {
