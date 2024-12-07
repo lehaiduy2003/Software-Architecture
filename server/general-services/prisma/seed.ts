@@ -101,6 +101,7 @@ const foodSeed = async () => {
     name: "Fried Rice",
     categoryId: 1,
     price: 25000,
+    quantity: 10,
     description: "Delicious fried rice",
     imageUrl: "image-url",
     restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
