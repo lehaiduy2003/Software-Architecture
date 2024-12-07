@@ -1,6 +1,7 @@
 import prisma from "../../prisma/database";
 import amqp from "amqplib";
 import dotenv from "dotenv";
+import { Food } from "../libs/zod/types/FoodValidation";
 
 dotenv.config();
 

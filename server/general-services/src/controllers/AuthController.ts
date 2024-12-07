@@ -58,7 +58,7 @@ export default class AuthController extends BaseController {
   };
 
   public logout = async (req: Request, res: Response) => {
-    req.session.destroy((err) => {
+    req.session.destroy((err: any) => {
       if (err) {
         return this.sendError(res, 500, "Logout failed");
       }

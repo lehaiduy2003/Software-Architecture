@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { BaseController } from "../utils/BaseController";
 import FoodService from "../services/FoodService";
+import { validateUser } from "../libs/zod/types/UserValidation";
+import { validateFood } from "../libs/zod/types/FoodValidation";
+import { log } from "console";
 
 export default class FoodController extends BaseController {
   private foodService: FoodService;
@@ -39,17 +42,19 @@ export default class FoodController extends BaseController {
   };
 
   public createFood = async (req: Request, res: Response) => {
+    log("req", (req as any).userData)
     try {
-      const food = await this.foodService.createFood(req.body);
-      if (!food) {
-        return this.sendResponse(res, 400, { success: false, message: "Failed to create food" });
-      }
-      return this.sendResponse(res, 201, { success: true, result: food });
+      const data = validateFood(req.body);
+        const food = await this.foodService.createFood(data);
+        if (!food) {
+            return this.sendResponse(res, 400, { success: false, message: "Failed to create food" });
+        }
+        return this.sendResponse(res, 201, { success: true, result: food });
     } catch (error) {
-      this.sendError(res, 500, "Internal server error");
-      throw error;
+        this.sendError(res, 500, "Internal server error");
+        throw error;
     }
-  };
+}
 
   public updateFood = async (req: Request, res: Response) => {
     try {

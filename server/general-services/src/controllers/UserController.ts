@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { BaseController } from "../utils/BaseController";
 import UserService from "../services/UserService";
-import { validateUser } from "../libs/zod/types/UserValidates";
+import { validateUser } from "../libs/zod/types/UserValidation";
 
 export default class UserController extends BaseController {
   private userService: UserService;

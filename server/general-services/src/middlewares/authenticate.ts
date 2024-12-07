@@ -47,6 +47,10 @@ export const setAuthCookies = async (
   });
 
   (req as any).userData = { userId: String(user.id), role: user.roleId };
+
+  // log("userData", (req as any).userData);
+  log("accessToken", req.cookies["accessToken"]);
+  log("refreshToken", req.cookies["refreshToken"]);
 };
 
 // JWT Authentication Middleware with proper refreshToken validation
@@ -55,8 +59,8 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const accessToken = req.cookies["accessToken"] || req.headers["authorization"]?.split(" ")[1];
-  const refreshToken = req.cookies["refreshToken"] || req.headers["x-refresh-token"];
+  const accessToken = await req.cookies["accessToken"] || req.headers["authorization"]?.split(" ")[1];
+  const refreshToken = await req.cookies["refreshToken"] || req.headers["x-refresh-token"];
 
   log("accessToken", accessToken);
   log("refreshToken", refreshToken);
