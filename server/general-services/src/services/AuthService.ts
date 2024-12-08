@@ -11,7 +11,7 @@ export default class AuthService {
   public login = async (phoneNumber: string, password: string) => {
     const user = await prisma.users.findUnique({
       where: {
-        phone: phoneNumber
+        phone: phoneNumber,
       },
     });
     if (!user) {
@@ -43,40 +43,44 @@ export default class AuthService {
     return user;
   };
 
-  public saveLoginHistory = async (userId: string, agentUser: string, ipAddress: string) => {
-    // Check nếu đã tồn tại userId thì cập nhật lại, ngược lại thì tạo mới
-    const loginHistory = await prisma.loginHistory.findMany({
-      where: {
-        userId: userId,
-      },
-    });
-    if (loginHistory.length > 0) {
-      await prisma.loginHistory.update({
-        where: {
-          id: loginHistory[0].id,
-        },
-        data: {
-          userAgent: agentUser,
-          ipAddress: ipAddress,
-        },
-      });
-    } else {
-      await prisma.loginHistory.create({
-        data: {
-          userId: userId,
-          userAgent: agentUser,
-          ipAddress: ipAddress,
-        },
-      });
-    }
-  }
+  // public saveLoginHistory = async (userId: string, agentUser: string, ipAddress: string) => {
+  //   // Check nếu đã tồn tại userId thì cập nhật lại, ngược lại thì tạo mới
+  //   const loginHistory = await prisma.loginHistory.findMany({
+  //     where: {
+  //       userId: userId,
+  //     },
+  //   });
+  //   if (loginHistory.length > 0) {
+  //     await prisma.loginHistory.update({
+  //       where: {
+  //         id: loginHistory[0].id,
+  //       },
+  //       data: {
+  //         userAgent: agentUser,
+  //         ipAddress: ipAddress,
+  //       },
+  //     });
+  //   } else {
+  //     await prisma.loginHistory.create({
+  //       data: {
+  //         userId: userId,
+  //         userAgent: agentUser,
+  //         ipAddress: ipAddress,
+  //       },
+  //     });
+  //   }
+  // }
 
   public generateAccessToken = async (userId: string, role: string) => {
     try {
       const payload = { userId, role };
-      const token = jwt.sign(payload, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
-        expiresIn: process.env.JWT_ACCESS_EXPIRATION,
-      });
+      const token = jwt.sign(
+        payload,
+        process.env.JWT_ACCESS_TOKEN_SECRET as string,
+        {
+          expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+        }
+      );
       return token;
     } catch (error) {
       log("Error generating access token:", error);
@@ -87,9 +91,13 @@ export default class AuthService {
   public generateRefreshToken = async (userId: string, role: string) => {
     try {
       const payload = { userId, role };
-      const token = jwt.sign(payload, process.env.JWT_REFRESH_TOKEN_SECRET as string, {
-        expiresIn: process.env.JWT_REFRESH_EXPIRATION,
-      });
+      const token = jwt.sign(
+        payload,
+        process.env.JWT_REFRESH_TOKEN_SECRET as string,
+        {
+          expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+        }
+      );
       return token;
     } catch (error) {
       log("Error generating refresh token:", error);
@@ -100,18 +108,18 @@ export default class AuthService {
   public getUserByPhoneNumber = async (phoneNumber: string) => {
     const user = await prisma.users.findUnique({
       where: {
-        phone: phoneNumber
-      }
+        phone: phoneNumber,
+      },
     });
     return user;
-  }
+  };
 
-  public getLoginHistory = async (userId: string): Promise<any> => {
-    const loginHistory = await prisma.loginHistory.findMany({
-      where: {
-        userId: userId
-      }
-    });
-    return loginHistory[0];
-  }
+  // public getLoginHistory = async (userId: string): Promise<any> => {
+  //   const loginHistory = await prisma.loginHistory.findMany({
+  //     where: {
+  //       userId: userId,
+  //     },
+  //   });
+  //   return loginHistory[0];
+  // };
 }
