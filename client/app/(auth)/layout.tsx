@@ -1,17 +1,25 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 import FacebookIcon from "@/components/icon/facebook-icon";
 import GoogleIcon from "@/components/icon/google-icon";
 import { Button } from "@/components/ui/button";
-
+import { redirect } from "next/navigation";
 
 export function AuthLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+  if(accessToken) {
+    redirect("/");
+  }
+  
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       {/* Left Section */}
