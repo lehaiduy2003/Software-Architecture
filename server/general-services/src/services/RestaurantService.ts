@@ -35,6 +35,67 @@ export default class RestaurantService {
     });
   };
 
+  public getAllRestaurants = async (page: number, pageSize: number) => {
+    return await prisma.restaurants.findMany(
+      {
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }
+    )
+  }
+
+  public getMenuByRestaurant = async (id: string) => {
+    const foods = await prisma.foods.findMany({
+      where: {
+        restaurantId: id,
+      },
+      include: {
+        Categories: true, // Fetch the category details
+      },
+    });
+
+    // Group foods by category
+    const groupedMenu = foods.reduce((menu, food) => {
+      const categoryName = food.Categories?.name || "Other";
+      if (!menu[categoryName]) {
+        menu[categoryName] = [];
+      }
+      menu[categoryName].push({
+        id: food.id,
+        name: food.name,
+        price: food.price,
+        description: food.description,
+        imageUrl: food.imageUrl,
+        quantity: food.quantity,
+      });
+      return menu;
+    }, {} as Record<string, Array<any>>);
+
+    return groupedMenu;
+  };
+
+  public getFoodByCategory = async (restaurantId: string, categoryId: number) => {
+    return await prisma.foods.findMany({
+      where: {
+        restaurantId,
+        categoryId,
+      },
+    });
+  };
+
+  public get6FoodsBestSeller = async (restaurantId: string) => {
+    return await prisma.foods.findMany({
+      where: {
+        restaurantId
+      },
+      orderBy: {
+        price: "desc",
+      },
+      take: 6,
+    })
+  }
+
+
   consumeMessages() {
     this.channel.consume("restaurant-queue", async (msg: any) => {
       if (msg !== null) {

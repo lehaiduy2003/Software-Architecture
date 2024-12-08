@@ -5,6 +5,8 @@ import prisma from "../../prisma/database";
 import { ERoles } from "../utils/interfaces/IUser";
 import { comparePassword, encode } from "../utils/encoded";
 import redisClient from "../config/redisClient";
+import { v4 as uuidv4 } from 'uuid';
+
 dotenv.config();
 
 export default class AuthService {
@@ -73,7 +75,7 @@ export default class AuthService {
 
   public generateAccessToken = async (userId: string, role: string) => {
     try {
-      const payload = { userId, role };
+      const payload = { userId, role, jti: uuidv4() };
       const token = jwt.sign(
         payload,
         process.env.JWT_ACCESS_TOKEN_SECRET as string,
@@ -81,6 +83,7 @@ export default class AuthService {
           expiresIn: process.env.JWT_ACCESS_EXPIRATION,
         }
       );
+      log("Access token generated: ", token);
       return token;
     } catch (error) {
       log("Error generating access token:", error);
@@ -90,7 +93,7 @@ export default class AuthService {
 
   public generateRefreshToken = async (userId: string, role: string) => {
     try {
-      const payload = { userId, role };
+      const payload = { userId, role, jti: uuidv4() };
       const token = jwt.sign(
         payload,
         process.env.JWT_REFRESH_TOKEN_SECRET as string,

@@ -41,7 +41,7 @@ export const setAuthCookies = async (
   // log("req after: ", res);
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    signed: true,
+    // signed: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     path: "/",
@@ -50,7 +50,7 @@ export const setAuthCookies = async (
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    signed: true,
+    // signed: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     path: "/",
