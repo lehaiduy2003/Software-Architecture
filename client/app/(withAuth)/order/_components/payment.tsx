@@ -1,30 +1,13 @@
+"use client"
+import useCartStore from "@/app/stores/cart-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import React  from "react";
 
-const initialFoodItems = [
-  {
-    id: 1,
-    name: "Phở Hà Nội",
-    price: "45000",
-    quantity: 1,
-    image: "/api/placeholder/100/100",
-  },
-  {
-    id: 2,
-    name: "Bánh Mì Đặc Biệt",
-    price: "25000",
-    quantity: 2,
-    image: "/api/placeholder/100/100",
-  },
-];
-
 const Payment = () => {
-  const totalPrice = initialFoodItems.reduce(
-    (total, item) => total + Number(item.price) * item.quantity,
-    0
-  );
+
+  const { cart, getTotalPrice } = useCartStore();
   
   return (
     <div className="w-1/3">
@@ -34,7 +17,7 @@ const Payment = () => {
         </CardHeader>
         <CardContent>
           {/* Chi tiết từng món */}
-          {initialFoodItems.map((item) => (
+          {cart.map((item) => (
             <div
               key={item.id}
               className="flex justify-between items-center mb-2"
@@ -54,7 +37,7 @@ const Payment = () => {
           {/* Tổng tiền */}
           <div className="flex justify-between font-bold">
             <span>Total</span>
-            <span>{totalPrice.toLocaleString()}đ</span>
+            <span>{getTotalPrice().toLocaleString()}đ</span>
           </div>
 
           {/* Nút thanh toán */}

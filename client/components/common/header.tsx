@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { ShoppingCart } from "lucide-react";
 import { Button } from "../ui/button";
 import { logout } from "@/app/action";
+import Shopping from "./shopping";
 
 const Header = () => {
   const cookieStore = cookies();
@@ -34,16 +34,7 @@ const Header = () => {
           <a href="#" className="text-white font-bold hover:underline">
             About
           </a>
-          <a href="/order">
-            <div className="relative">
-              <button className="text-gray-600 hover:text-gray-800 relative">
-                <ShoppingCart className="w-6 h-6 text-white" />
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  0
-                </span>
-              </button>
-            </div>
-          </a>
+          <Shopping />
           {accessToken ? (
             <form action={logout}>
               <Button
