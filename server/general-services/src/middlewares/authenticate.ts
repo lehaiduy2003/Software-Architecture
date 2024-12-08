@@ -29,25 +29,31 @@ export const setAuthCookies = async (
   if (!user) {
     return;
   }
-  const accessToken = await authService.generateAccessToken(user.id, user?.Roles.name);
-  const refreshToken = await authService.generateRefreshToken(user.id, user?.Roles.name);
+  const accessToken = await authService.generateAccessToken(
+    user.id,
+    user?.Roles.name
+  );
+  const refreshToken = await authService.generateRefreshToken(
+    user.id,
+    user?.Roles.name
+  );
   // log("accessToken after", accessToken);
   // log("req after: ", res);
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
-    signed: true,
+    // signed: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    path: '/',
+    path: "/",
     maxAge: 30 * 60 * 1000, // 30 minutes
   });
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    signed: true,
+    // signed: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    path: '/',
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
   // log("req before: ", res);
@@ -65,8 +71,11 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const accessToken = await req.cookies["accessToken"] || req.headers["authorization"]?.split(" ")[1];
-  const refreshToken = await req.cookies["refreshToken"] || req.headers["x-refresh-token"];
+  const accessToken =
+    (await req.signedCookies["accessToken"]) ||
+    req.headers["authorization"]?.split(" ")[1];
+  const refreshToken =
+    (await req.signedCookies["refreshToken"]) || req.headers["x-refresh-token"];
 
   log("accessToken", accessToken);
   log("refreshToken", refreshToken);
@@ -83,7 +92,10 @@ export const authenticate = async (
 
         // Tạo accessToken mới từ refreshToken
         const newAccessToken = jwt.sign(
-          { userId: decodedRefreshToken.userId, role: decodedRefreshToken.role },
+          {
+            userId: decodedRefreshToken.userId,
+            role: decodedRefreshToken.role,
+          },
           process.env.JWT_ACCESS_TOKEN_SECRET as string,
           { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || "30m" }
         );
@@ -92,6 +104,7 @@ export const authenticate = async (
         res.cookie("accessToken", newAccessToken, {
           httpOnly: true,
           signed: true,
+          path: "/",
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
           maxAge: 30 * 60 * 1000, // 30 phút
@@ -115,11 +128,16 @@ export const authenticate = async (
             process.env.JWT_REFRESH_TOKEN_SECRET as string,
             async (refreshErr: any, decodedRefreshToken: any) => {
               if (refreshErr) {
-                return res.status(403).json({ message: "Invalid refresh token!" });
+                return res
+                  .status(403)
+                  .json({ message: "Invalid refresh token!" });
               }
               // Tạo accessToken mới từ refreshToken
               const newAccessToken = jwt.sign(
-                { userId: decodedRefreshToken.userId, role: decodedRefreshToken.role },
+                {
+                  userId: decodedRefreshToken.userId,
+                  role: decodedRefreshToken.role,
+                },
                 process.env.JWT_ACCESS_TOKEN_SECRET as string,
                 { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || "30m" }
               );
@@ -129,7 +147,8 @@ export const authenticate = async (
                 httpOnly: true,
                 signed: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+                sameSite:
+                  process.env.NODE_ENV === "production" ? "strict" : "lax",
                 maxAge: 30 * 60 * 1000, // 30 phút
               });
 

@@ -19,14 +19,18 @@ RUN npm run build
 
 # Stage 2: Alpine Runtime
 FROM node:20-alpine
-# install OpenSSL and other dependencies for the prisma client
+
+# Install build tools and dependencies for bcrypt and Prisma
 RUN apk add --no-cache openssl musl-dev libc6-compat
 
-# set working directory
+# Set working directory
 WORKDIR /usr/src/app
 
-# copy source code and result from build stage into container
+# Copy built files and package.json from builder stage
 COPY --from=builder /usr/src/app /usr/src/app
+
+# Reinstall production dependencies to rebuild bcrypt for Alpine
+RUN npm install --prefer-offline --no-audit
 
 # Expose the port for the service
 EXPOSE 3001

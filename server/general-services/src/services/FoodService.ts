@@ -71,6 +71,17 @@ export default class FoodService {
     return f;
   };
 
+  public updateQuantity = async (foodId: string, quantity: number) => {
+    return await prisma.foods.update({
+      where: {
+        id: foodId,
+      },
+      data: {
+        quantity: quantity,
+      },
+    });
+  }
+
   public deleteFood = async (id: string) => {
     const f = await prisma.foods.delete({
       where: {
