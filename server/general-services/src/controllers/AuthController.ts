@@ -9,6 +9,8 @@ import { setAuthCookies } from "../middlewares/authenticate";
 import AuthService from "../services/AuthService";
 import { comparePassword } from "../utils/encoded";
 import redisClient from "../config/redisClient";
+import { addToBlacklist } from "../utils/blackListToken";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 export default class AuthController extends BaseController {
@@ -64,6 +66,7 @@ export default class AuthController extends BaseController {
   };
 
   public login = async (req: Request, res: Response, next: NextFunction) => {
+    log("Login request received");
     try {
       const { phoneNumber, password } = req.body;
 
@@ -177,11 +180,32 @@ export default class AuthController extends BaseController {
     }
   };
 
+  public  getAccessTokenFromCookie(cookie: string): string | null {
+    const cookies = cookie.split('; ');
+    for (const c of cookies) {
+      const [name, value] = c.split('=');
+      if (name === 'accessToken') {
+        return decodeURIComponent(value);
+      }
+    }
+    return null;
+  }
   public logout = async (req: Request, res: Response) => {
-    req.session.destroy((err: any) => {
+    req.session.destroy(async (err: any) => {
       if (err) {
         return this.sendError(res, 500, "Logout failed");
       }
+      const authHeader = req.headers;
+      log("Auth header: ", authHeader);
+      const token =  this.getAccessTokenFromCookie(authHeader.cookie as string);
+      log("token: ", token);
+      // const token = "";
+      if (!token) {
+        return this.sendError(res, 400, "Token is required");
+      }
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET as string) as jwt.JwtPayload;
+      // Thêm token vào danh sách đen
+      await addToBlacklist(decoded.jti as string, decoded.exp as number);
       // Clear cookies
       res.clearCookie("refreshToken");
       res.clearCookie("accessToken");
@@ -194,4 +218,4 @@ export default class AuthController extends BaseController {
       });
     });
   };
-}
+};

@@ -84,4 +84,22 @@ export default class FoodController extends BaseController {
       throw error;
     }
   };
+
+  public updateFoodQuantity = async (req: Request, res: Response) => {
+    const { foodId, quantity } = req.body;
+    if (!foodId || quantity === undefined) {
+        return res.status(400).json({ message: 'Invalid request data' });
+    }
+
+    try {
+        const updatedFood = await this.foodService.updateQuantity(foodId, quantity);
+        if (updatedFood) {
+            return res.status(200).json(updatedFood);
+        } else {
+            return res.status(404).json({ message: 'Food item not found' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal server error', error });
+    }
+};
 }
