@@ -5,12 +5,7 @@ const withAuthLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  
-  return (
-    <div suppressHydrationWarning>
-        {children}
-    </div>
-  );
+  return <div suppressHydrationWarning>{children}</div>;
 };
 
 export default withAuthLayout;

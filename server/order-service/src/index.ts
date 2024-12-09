@@ -3,8 +3,21 @@ import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../swagger.json";
 import createOrderRoute from "./routes/orderRoute";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET as string,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, httpOnly: true, maxAge: 60000 * 60 },
+  })
+);
+app.use(cookieParser(process.env.COOKIE_SECRET as string));
 
 app.use(
   cors({
@@ -12,7 +25,7 @@ app.use(
     credentials: true,
   })
 );
-
+app.set("trust proxy", true);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1", createOrderRoute().getRouter());
 
