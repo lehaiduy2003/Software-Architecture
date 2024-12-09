@@ -28,6 +28,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(cookieParser(process.env.COOKIE_SECRET as string));
 app.set("trust proxy", true);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
