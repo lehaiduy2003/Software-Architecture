@@ -76,6 +76,7 @@ export default function CompletePage() {
 
   const [status, setStatus] = useState<PaymentStatus>("default");
   const [intentId, setIntentId] = useState<string | null>(null);
+  const [hasFetched, setHasFetched] = useState(false);
 
   const { clearCart, cart } = useCartStore();
 
@@ -104,27 +105,30 @@ export default function CompletePage() {
     });
   }, [stripe]);
 
-  if (status === "succeeded") {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        foods: cart,
-        paymentMethod: "CARD",
-        paymentStatus: "PAID",
-        restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
-      }),
-    })
-      .then(() => {
-        clearCart();
+  useEffect(() => {
+    if (status === "succeeded" && !hasFetched) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          foods: cart,
+          paymentMethod: "CARD",
+          paymentStatus: "PAID",
+          restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
+        }),
       })
-      .catch((error) => {
-        console.error("Error while creating order:", error);
-      });
-  }
+        .then(() => {
+          clearCart();
+          setHasFetched(true); // Set hasFetched to true after successful fetch
+        })
+        .catch((error) => {
+          console.error("Error while creating order:", error);
+        });
+    }
+  }, [status, hasFetched, cart, clearCart]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
