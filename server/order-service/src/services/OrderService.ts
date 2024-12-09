@@ -40,7 +40,7 @@ class OrderService {
   }
 
   // Create an order and send it to RabbitMQ
-  async createOrder(data: Order, foods: OrderedFood[], restaurantId: string) {
+  async createOrder(restaurantId: string, data: Order, foods: OrderedFood[]) {
     const order = await prisma.orders.create({
       data,
     });
@@ -61,6 +61,8 @@ class OrderService {
     await prisma.orderItems.createMany({
       data: orderItems,
     });
+
+    console.log(totalPrice);
 
     const invoice = validateInvoice({ orderId: order.id, total: totalPrice });
 

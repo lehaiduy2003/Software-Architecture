@@ -1,12 +1,12 @@
-version: '3.8'
+version: "3.8"
 
 services:
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5673:5672"    # RabbitMQ server port
-      - "15673:15672"  # RabbitMQ management UI
+      - "5673:5672" # RabbitMQ server port
+      - "15673:15672" # RabbitMQ management UI
     networks:
       - app-network
     volumes:

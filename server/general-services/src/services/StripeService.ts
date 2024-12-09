@@ -11,10 +11,14 @@ export default class StripeService {
   }
   public checkout = async (foods: OrderedFood[]) => {
     const totalPrice = calculateTotalPrice(foods);
-    const paymentIntent = await this.stripe.paymentIntents.create({
-      amount: totalPrice,
-      currency: "usd",
-    });
-    return paymentIntent.client_secret;
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: Math.round(totalPrice * 100),
+        currency: "usd",
+      });
+      return paymentIntent.client_secret;
+    } catch (error) {
+      throw error;
+    }
   };
 }

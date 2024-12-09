@@ -28,7 +28,7 @@ export default class StripeController extends BaseController {
       return this.sendResponse(res, 200, clientSecret);
     } catch (error) {
       this.sendError(res, 500, "Internal server error");
-      throw error;
+      console.log("StripeController error:", error);
     }
   };
 }
