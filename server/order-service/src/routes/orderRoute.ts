@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { OrderController } from "../controllers/OrderController";
 import { BaseRoute } from "../utils/BaseRoute";
+import { authenticate } from "../middlewares/authenticate";
+import { authorize } from "../middlewares/authorize";
 
 class OrderRouter extends BaseRoute {
   private readonly orderController: OrderController;
@@ -16,7 +18,7 @@ class OrderRouter extends BaseRoute {
   private initRoutes() {
     this.router.get("/", this.orderController.getOrderList);
     this.router.get("/:orderId", this.orderController.getOrderById);
-    this.router.post("/", this.orderController.createOrder);
+    this.router.post("/", authenticate, this.orderController.createOrder);
   }
 }
 

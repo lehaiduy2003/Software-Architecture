@@ -3,61 +3,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import { log } from "console";
-import prisma from "../../prisma/database";
-import AuthService from "../services/AuthService";
 
 dotenv.config();
-
-export const setAuthCookies = async (
-  req: Request,
-  res: Response,
-  userId: string
-): Promise<void> => {
-  const authService = new AuthService();
-  const user = await prisma.users.findUnique({
-    where: {
-      id: userId,
-    },
-    include: {
-      Roles: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
-  if (!user) {
-    return;
-  }
-  const accessToken = await authService.generateAccessToken(user.id, user?.Roles.name);
-  const refreshToken = await authService.generateRefreshToken(user.id, user?.Roles.name);
-  // log("accessToken after", accessToken);
-  // log("req after: ", res);
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    // signed: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    path: "/",
-    maxAge: 30 * 60 * 1000, // 30 minutes
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    // signed: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-  // log("req before: ", res);
-  (req as any).userData = { userId: String(user.id), role: user.roleId };
-
-  // log("userData", (req as any).userData);
-  // log("accessToken", req.cookies["accessToken"]);
-  // log("refreshToken", req.cookies["refreshToken"]);
-  // log("userData", (req as any).userData);
-};
 
 // JWT Authentication Middleware with proper refreshToken validation
 export const authenticate = async (

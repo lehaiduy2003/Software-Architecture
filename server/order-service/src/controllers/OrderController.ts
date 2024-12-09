@@ -26,10 +26,13 @@ export class OrderController {
 
   async createOrder(req: Request, res: Response): Promise<void> {
     try {
-      const { order, foods, restaurantId } = req.body;
-      const parsedOrder = validateOrder(order);
+      const { paymentMethod, paymentStatus, restaurantId, foods } = req.body;
+
+      const { userId } = (req as any).userData;
+
       const parsedFoods = foods.map((food: any) => validateOrderedFood(food));
-      const data = await orderService.createOrder(parsedOrder, parsedFoods, restaurantId);
+      const orderData = validateOrder({ paymentMethod, paymentStatus, userId });
+      const data = await orderService.createOrder(restaurantId, orderData, parsedFoods);
       res.status(201).json({ success: true, data });
     } catch (error) {
       res.status(400).json({ success: false, message: "error when create order" });

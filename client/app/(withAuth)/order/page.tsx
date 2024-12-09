@@ -1,9 +1,9 @@
 import React from "react";
 import OrderList from "./_components/order-list";
-import Payment from "./_components/payment";
 import Header from "@/components/common/header";
 import FooterSection from "@/components/common/footer";
 import { Metadata } from "next";
+import Payment from "./_components/payment";
 
 export const metadata: Metadata = {
   title: "Order",

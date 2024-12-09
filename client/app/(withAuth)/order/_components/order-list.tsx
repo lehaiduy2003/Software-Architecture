@@ -22,7 +22,7 @@ const OrderList = () => {
             />
             <div className="flex-grow">
               <h3 className="text-lg font-semibold">{item.name}</h3>
-              <p className="text-gray-500">{item.price.toLocaleString()}đ</p>
+              <p className="text-gray-500">{item.price.toLocaleString()}$</p>
             </div>
 
             {/* Điều khiển số lượng */}
