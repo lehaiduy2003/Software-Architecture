@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe } from "@stripe/react-stripe-js";
 import { useSearchParams } from "next/navigation";
-import useCartStore, { FoodItem } from "@/app/stores/cart-store";
+import useCartStore from "@/app/stores/cart-store";
 
 const SuccessIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,7 +76,6 @@ export default function CompletePage() {
 
   const [status, setStatus] = useState<PaymentStatus>("default");
   const [intentId, setIntentId] = useState<string | null>(null);
-  const [hasFetched, setHasFetched] = useState(false);
 
   const { clearCart, cart } = useCartStore();
 
@@ -103,32 +102,29 @@ export default function CompletePage() {
       setStatus(paymentIntent.status as PaymentStatus);
       setIntentId(paymentIntent.id);
     });
-  }, [stripe, searchParams]);
+  }, [stripe]);
 
-  useEffect(() => {
-    if (status === "succeeded" && !hasFetched) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          foods: cart,
-          paymentMethod: "CARD",
-          paymentStatus: "PAID",
-          restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
-        }),
+  if (status === "succeeded") {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        foods: cart,
+        paymentMethod: "CARD",
+        paymentStatus: "PAID",
+        restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
+      }),
+    })
+      .then(() => {
+        clearCart();
       })
-        .then(() => {
-          clearCart();
-          setHasFetched(true); // Set hasFetched to true after successful fetch
-        })
-        .catch((error) => {
-          console.error("Error while creating order:", error);
-        });
-    }
-  }, [status, hasFetched, cart, clearCart]);
+      .catch((error) => {
+        console.error("Error while creating order:", error);
+      });
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
