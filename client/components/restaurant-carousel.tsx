@@ -1,45 +1,10 @@
+import { restaurantFetcher } from "@/app/action";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
 
-const FeaturedRestaurants = () => {
-  const restaurants = [
-    {
-      id: 1,
-      name: "Tasty Bites",
-      cuisine: "Italian",
-      image: "/images/restaurant.jpg",
-      description: "Authentic Italian cuisine in a cozy setting",
-    },
-    {
-      id: 2,
-      name: "Spice House",
-      cuisine: "Indian",
-      image: "/images/restaurant.jpg",
-      description: "Authentic Indian spices and flavors",
-    },
-    {
-      id: 3,
-      name: "Green Leaf",
-      cuisine: "Vegetarian",
-      image: "/images/restaurant.jpg",
-      description: "Fresh and healthy vegetarian options",
-    },
-    {
-      id: 4,
-      name: "Green Leaf",
-      cuisine: "Vegetarian",
-      image: "/images/restaurant.jpg",
-      description: "Fresh and healthy vegetarian options",
-    },
-    {
-      id: 5,
-      name: "Green Leaf",
-      cuisine: "Vegetarian",
-      image: "/images/restaurant.jpg",
-      description: "Fresh and healthy vegetarian options",
-    },
-  ];
+const FeaturedRestaurants = async () => {
+  const restaurants = await restaurantFetcher();
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -48,7 +13,7 @@ const FeaturedRestaurants = () => {
       </h2>
       <Carousel className="w-full">
         <CarouselContent>
-          {restaurants.map((restaurant) => (
+          {restaurants.map((restaurant: any) => (
             <CarouselItem
               key={restaurant.id}
               className="md:basis-1/2 lg:basis-1/3 bg-[#f1f1f1] rounded-t-2xl"
@@ -56,7 +21,7 @@ const FeaturedRestaurants = () => {
               <Card className="h-full">
                 <div className="relative w-full h-48 mb-4 overflow-hidden">
                   <img
-                    src={restaurant.image}
+                    src={restaurant.imageUrl}
                     alt={restaurant.name}
                     className="w-full h-full object-cover rounded-t-2xl"
                   />
@@ -64,10 +29,14 @@ const FeaturedRestaurants = () => {
                 <CardContent className="p-4">
                   <h3 className="text-xl font-semibold">{restaurant.name}</h3>
                   <p className="text-muted-foreground">
-                    {restaurant.cuisine} Cuisine
+                    Total order: {restaurant.totalOrder}
                   </p>
-                  <p className="mt-2 text-sm">{restaurant.description}</p>
-                  <Button className="mt-4 w-full font-bold">View Restaurant</Button>
+                  <p className="mt-2 text-sm">{restaurant.address}</p>
+                  <a href={`/restaurant/${restaurant.id}`}>
+                    <Button className="mt-4 w-full font-bold">
+                      View Restaurant
+                    </Button>
+                  </a>
                 </CardContent>
               </Card>
             </CarouselItem>

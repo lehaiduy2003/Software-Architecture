@@ -45,3 +45,13 @@ export const footFetcher = async () => {
     return foods.data;
 }
 
+export const restaurantFetcher = async () => {
+    'use server'
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/general/restaurants/top10`
+    );
+
+    const restaurants = await response.json()
+
+    return restaurants.data;
+}
