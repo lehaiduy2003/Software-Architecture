@@ -14,9 +14,6 @@ class InvoiceRoute extends BaseRoute {
   private initRoutes() {
     this.router.get("/", this.invoiceController.getInvoices);
     this.router.get("/:userId", this.invoiceController.getInvoiceById);
-    // this.router.post("/", this.invoiceController.createUser);
-    // this.router.put("/:userId", this.invoiceController.updateUser);
-    // this.router.delete("/:userId", this.invoiceController.deleteUser);
   }
 }
 // /invoices/
