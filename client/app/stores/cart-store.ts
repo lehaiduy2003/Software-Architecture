@@ -54,7 +54,13 @@ const useCartStore = create<CartState>()(
         set((state) => ({
           cart: state.cart
             .map((item) => (item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item))
-            .filter((item) => item.quantity > 0),
+            .filter((item) => {
+              if (item.quantity < 0) {
+                state.restaurantId = null;
+                return false;
+              }
+              return true;
+            }),
         })),
 
       clearCart: () => {

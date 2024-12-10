@@ -16,7 +16,7 @@ app.use(
     secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true, maxAge: 60000 },
+    cookie: { secure: false, httpOnly: true, maxAge: 60000 * 60 },
   })
 );
 app.use(cookieParser(process.env.COOKIE_SECRET as string));
