@@ -62,10 +62,9 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const accessToken =
-    (await req.cookies["accessToken"]) || req.headers["authorization"]?.split(" ")[1];
+  // const accessToken = (await req.cookies["accessToken"]) || req.headers["authorization"]?.split(" ")[1];
   const refreshToken = (await req.cookies["refreshToken"]) || req.headers["x-refresh-token"];
-
+  const accessToken = await req.cookies["accessToken"];
   log("accessToken", accessToken);
   log("refreshToken", refreshToken);
 

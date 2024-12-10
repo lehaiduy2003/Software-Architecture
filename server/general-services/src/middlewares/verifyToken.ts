@@ -12,7 +12,8 @@ interface CustomRequest extends Request {
 
 export default async function verifyToken(req: CustomRequest, res: Response, next: NextFunction) {
     try {
-        const accessToken = req.cookies?.accessToken;  // Lấy accessToken từ cookies
+        const accessToken = await req.cookies["accessToken"]  // Lấy accessToken từ cookies
+        log("accessToken in verify: ", accessToken);
         if (!accessToken) {
             // Nếu không có accessToken, tiếp tục tới middleware tiếp theo (refreshToken)
             return next();
@@ -38,6 +39,7 @@ export default async function verifyToken(req: CustomRequest, res: Response, nex
         (req as any).userData = decoded;
         next();  // Tiếp tục qua các middleware khác
     } catch (err) {
+        log(err);
         return res.status(401).json({ error: "Invalid or expired token" });
     }
 }
