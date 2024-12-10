@@ -45,16 +45,16 @@ export default class FoodController extends BaseController {
     log("req", (req as any).userData)
     try {
       const data = validateFood(req.body);
-        const food = await this.foodService.createFood(data);
-        if (!food) {
-            return this.sendResponse(res, 400, { success: false, message: "Failed to create food" });
-        }
-        return this.sendResponse(res, 201, { success: true, result: food });
+      const food = await this.foodService.createFood(data);
+      if (!food) {
+        return this.sendResponse(res, 400, { success: false, message: "Failed to create food" });
+      }
+      return this.sendResponse(res, 201, { success: true, result: food });
     } catch (error) {
-        this.sendError(res, 500, "Internal server error");
-        throw error;
+      this.sendError(res, 500, "Internal server error");
+      throw error;
     }
-}
+  }
 
   public updateFood = async (req: Request, res: Response) => {
     try {
@@ -88,18 +88,38 @@ export default class FoodController extends BaseController {
   public updateFoodQuantity = async (req: Request, res: Response) => {
     const { foodId, quantity } = req.body;
     if (!foodId || quantity === undefined) {
-        return res.status(400).json({ message: 'Invalid request data' });
+      return res.status(400).json({ message: 'Invalid request data' });
     }
 
     try {
-        const updatedFood = await this.foodService.updateQuantity(foodId, quantity);
-        if (updatedFood) {
-            return res.status(200).json(updatedFood);
-        } else {
-            return res.status(404).json({ message: 'Food item not found' });
-        }
+      const updatedFood = await this.foodService.updateQuantity(foodId, quantity);
+      if (updatedFood) {
+        return res.status(200).json(updatedFood);
+      } else {
+        return res.status(404).json({ message: 'Food item not found' });
+      }
     } catch (error) {
-        return res.status(500).json({ message: 'Internal server error', error });
+      return res.status(500).json({ message: 'Internal server error', error });
     }
-};
+  };
+
+  async getFoodsByCategoryAndRestaunrant(req: Request, res: Response) {
+
+    try {
+      const { restaurantId, categoryId } = req.query;
+      let result = [];
+      if (!categoryId) {
+        result = await this.foodService.getFoodsByCategoryAndRestaunrant(-1, String(restaurantId));
+      } else {
+        result = await this.foodService.getFoodsByCategoryAndRestaunrant(Number(categoryId), String(restaurantId));
+      }
+      if (result) {
+        return res.status(200).json(result);
+      } else {
+        return res.status(404).json({ message: 'Food items not found' });
+      }
+    } catch (error) {
+      return res.status(500).json({ message: 'Internal server error', error });
+    }
+  }
 }

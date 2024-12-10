@@ -1,4 +1,6 @@
 import StripeController from "../controllers/StripeController";
+import { authenticate } from "../middlewares/authenticate";
+import verifyToken from "../middlewares/revokeToken";
 import StripeService from "../services/StripeService";
 import { BaseRoute } from "../utils/BaseRoute";
 
@@ -12,7 +14,7 @@ class StripeRoute extends BaseRoute {
   }
 
   private initRoutes() {
-    this.router.post("/checkout", this.stripeController.checkout);
+    this.router.post("/checkout", verifyToken, authenticate, this.stripeController.checkout);
   }
 }
 
