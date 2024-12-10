@@ -55,3 +55,12 @@ export const restaurantFetcher = async () => {
 
     return restaurants.data;
 }
+
+export const fetchRestaurants = async (page: number, pageSize: number) => {
+    'use server'
+    const response = await fetch(
+        `http://localhost:8080/general/restaurants/all?page=${page}&pageSize=${pageSize}`
+    );
+    const result = await response.json();
+    return result.data;
+}
