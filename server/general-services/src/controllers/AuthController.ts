@@ -182,20 +182,19 @@ export default class AuthController extends BaseController {
       if (err) {
         return this.sendError(res, 500, "Logout failed");
       }
-      // const authHeader = req.cookies["accessToken"];
-      // log("Auth header: ", authHeader);
+      const token = req.cookies["accessToken"];
       // const token = this.getAccessTokenFromCookie(authHeader.cookie as string);
-      // log("token: ", token);
-      // // const token = "";
-      // if (!token) {
-      //   return this.sendError(res, 400, "Token is required");
-      // }
-      // const decoded = jwt.verify(
-      //   token,
-      //   process.env.JWT_ACCESS_TOKEN_SECRET as string
-      // ) as jwt.JwtPayload;
+      log("token: ", token);
+      // const token = "";
+      if (!token) {
+        return this.sendError(res, 400, "Token is required");
+      }
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_ACCESS_TOKEN_SECRET as string
+      ) as jwt.JwtPayload;
       // Thêm token vào danh sách đen
-      // await addToBlacklist(decoded.jti as string, decoded.exp as number);
+      await addToBlacklist(decoded.jti as string, decoded.exp as number);
       // Clear cookies
       res.clearCookie("refreshToken");
       res.clearCookie("accessToken");
