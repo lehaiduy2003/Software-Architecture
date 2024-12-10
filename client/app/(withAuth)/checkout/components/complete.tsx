@@ -79,7 +79,7 @@ export default function CompletePage() {
   const [intentId, setIntentId] = useState<string | null>(null);
   const [hasFetched, setHasFetched] = useState(false);
 
-  const { clearCart, cart } = useCartStore();
+  const { clearCart, cart, restaurantId } = useCartStore();
 
   const searchParams = useSearchParams();
 
@@ -118,7 +118,7 @@ export default function CompletePage() {
           foods: cart,
           paymentMethod: "CARD",
           paymentStatus: "PAID",
-          restaurantId: "a61f26df-9b45-4764-9075-23efce13d259",
+          restaurantId: restaurantId,
         }),
       })
         .then(() => {

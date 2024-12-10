@@ -173,7 +173,7 @@ export default class AuthController extends BaseController {
         return this.sendError(res, 500, "Logout failed");
       }
 
-      const token = req.cookies["accessToken"];
+      const token = await req.cookies["accessToken"];
       log("token: ", token);
 
       // Kiểm tra xem có token không
@@ -184,6 +184,7 @@ export default class AuthController extends BaseController {
           success: true,
           message: "Logged out successfully",
         });
+        return;
       }
 
       try {
@@ -231,5 +232,4 @@ export default class AuthController extends BaseController {
       });
     });
   };
-
 }
