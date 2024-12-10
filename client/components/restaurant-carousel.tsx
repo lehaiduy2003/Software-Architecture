@@ -1,16 +1,20 @@
 import { restaurantFetcher } from "@/app/action";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel";
 
 const FeaturedRestaurants = async () => {
   const restaurants = await restaurantFetcher();
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold mb-6 text-center">
-        Featured Restaurants
-      </h2>
+      <h2 className="text-3xl font-bold mb-6 text-center">Featured Restaurants</h2>
       <Carousel className="w-full">
         <CarouselContent>
           {restaurants.map((restaurant: any) => (
@@ -28,14 +32,10 @@ const FeaturedRestaurants = async () => {
                 </div>
                 <CardContent className="p-4">
                   <h3 className="text-xl font-semibold">{restaurant.name}</h3>
-                  <p className="text-muted-foreground">
-                    Total order: {restaurant.totalOrder}
-                  </p>
+                  <p className="text-muted-foreground">Total order: {restaurant.totalOrder}</p>
                   <p className="mt-2 text-sm">{restaurant.address}</p>
                   <a href={`/restaurant/${restaurant.id}`}>
-                    <Button className="mt-4 w-full font-bold">
-                      View Restaurant
-                    </Button>
+                    <Button className="mt-4 w-full font-bold">View Restaurant</Button>
                   </a>
                 </CardContent>
               </Card>

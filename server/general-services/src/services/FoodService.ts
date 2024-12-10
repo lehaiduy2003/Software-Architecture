@@ -2,6 +2,7 @@ import prisma from "../../prisma/database";
 import amqp from "amqplib";
 import dotenv from "dotenv";
 import { Food } from "../libs/zod/types/FoodValidation";
+import { log } from "console";
 
 dotenv.config();
 
@@ -90,4 +91,27 @@ export default class FoodService {
     });
     return f;
   };
+
+  async getFoodsByCategoryAndRestaunrant(categoryId: number, restaurantId: string) {
+    log("category", categoryId);
+    log("restaurant", restaurantId);
+    let foods = [];
+    if (categoryId < 0) {
+      foods=  await prisma.foods.findMany(
+        {
+          where: {
+            restaurantId: restaurantId
+          }
+        }
+      )
+    } else {
+      foods = await prisma.foods.findMany({
+        where: {
+          restaurantId: restaurantId,
+          categoryId: categoryId,
+        },
+      });
+    }
+    return foods;
+  }
 }

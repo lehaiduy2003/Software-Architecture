@@ -12,8 +12,7 @@ export const authenticate = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const accessToken =
-    (await req.cookies["accessToken"]) || req.headers["authorization"]?.split(" ")[1];
+  const accessToken = (await req.cookies["accessToken"]) || req.headers["authorization"]?.split(" ")[1];
   const refreshToken = (await req.cookies["refreshToken"]) || req.headers["x-refresh-token"];
 
   log("accessToken", accessToken);
@@ -42,7 +41,6 @@ export const authenticate = async (
         // Lưu lại accessToken mới vào cookie
         res.cookie("accessToken", newAccessToken, {
           httpOnly: true,
-          // signed: true,
           path: "/",
           secure: process.env.NODE_ENV === "production",
           sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
@@ -82,7 +80,6 @@ export const authenticate = async (
               // Lưu lại accessToken mới vào cookie
               res.cookie("accessToken", newAccessToken, {
                 httpOnly: true,
-                // signed: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
                 maxAge: 30 * 60 * 1000, // 30 phút

@@ -6,7 +6,6 @@ import Shopping from "./shopping";
 const Header = () => {
   const cookieStore = cookies();
   const accessToken = cookieStore.get("accessToken")?.value;
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 shadow-sm py-4 bg-[#1A202C]">
       <div className="container mx-auto flex justify-between items-center px-4">
@@ -22,10 +21,7 @@ const Header = () => {
           <a href="/" className="text-white font-bold hover:underline">
             Home
           </a>
-          <a
-            href="/restaurants"
-            className="text-white font-bold hover:underline"
-          >
+          <a href="/#" className="text-white font-bold hover:underline">
             Restaurants
           </a>
           <a href="#" className="text-white font-bold hover:underline">

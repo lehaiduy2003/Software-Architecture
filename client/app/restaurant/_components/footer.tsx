@@ -18,7 +18,7 @@ export default function RestaurantFooter() {
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <MapPin className="text-white" />
-              <span>restaurant.address</span>
+              <span>123</span>
             </div>
             <div className="flex items-center space-x-2">
               <Phone className="text-white" />

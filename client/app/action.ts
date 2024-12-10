@@ -8,10 +8,10 @@ export async function logout() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/general/auth/logout`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     });
 
     const logoutData = await response.json();

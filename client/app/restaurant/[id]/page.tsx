@@ -1,41 +1,35 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import RestaurantHeader from "../_components/header";
 import FoodList from "../_components/food-list";
 import RestaurantFooter from "../_components/footer";
-import { useParams } from "next/navigation";
+import { cookies } from "next/headers";
 
-const Restaurant = () => {
-  const params = useParams();
-  const id = params.id;
-  console.log(`${process.env.NEXT_PUBLIC_API_URL}/general/foods?restaurantId=${id}`);
+const fetchRestaurantFoods = async (id: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/general/foods?restaurantId=${id}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
+  const data = await response.json();
+  return data;
+};
 
-  const [foods, setFoods] = useState([]);
-  useEffect(() => {
-    const fetchRestaurantFoods = async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/general/foods?restaurantId=${id}`,
-        // "http://localhost:8080/general/foods?restaurantId=a61f26df-9b45-4764-9075-23efce13d259",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-      setFoods(data);
-    };
-    fetchRestaurantFoods;
-  }, []);
+const Restaurant = async ({ params }: { params: { id: string } }) => {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+  // console.log(accessToken);
 
-  console.log("Foods:", foods);
+  const foods = await fetchRestaurantFoods(params.id);
 
   return (
     <div className="bg-[#F8F9FA]">
       <RestaurantHeader />
-      <FoodList foods={foods} />
+      <FoodList foods={foods} accessToken={accessToken} />
       <RestaurantFooter />
     </div>
   );

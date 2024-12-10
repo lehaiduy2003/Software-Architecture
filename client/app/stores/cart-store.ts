@@ -7,11 +7,13 @@ export type FoodItem = {
   imageUrl: string;
   price: number;
   description: string;
+  restaurantId: string;
   quantity: number;
 };
 
 interface CartState {
   cart: FoodItem[];
+  restaurantId: string | null;
   addToCart: (food: FoodItem) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -24,7 +26,7 @@ const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       cart: [],
-
+      restaurantId: null,
       addToCart: (food: FoodItem) =>
         set((state) => {
           const existingItem = state.cart.find((item) => item.id === food.id);
@@ -33,9 +35,14 @@ const useCartStore = create<CartState>()(
               cart: state.cart.map((item) =>
                 item.id === food.id ? { ...item, quantity: item.quantity + 1 } : item
               ),
+              restaurantId: food.restaurantId,
             };
           }
-          return { cart: [...state.cart, { ...food, quantity: 1 }] };
+
+          return {
+            cart: [...state.cart, { ...food, quantity: 1 }],
+            restaurantId: food.restaurantId,
+          };
         }),
 
       removeFromCart: (id: string) =>
@@ -51,10 +58,8 @@ const useCartStore = create<CartState>()(
         })),
 
       clearCart: () => {
-        console.log("clearCart function called");
         set((state) => {
-          console.log("Previous cart state:", state.cart);
-          return { cart: [] };
+          return { cart: [], restaurantId: null };
         });
       },
 

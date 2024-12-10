@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { orderService } from "../services/OrderService";
 import { validateOrder } from "../libs/zod/types/Order";
 import { validateOrderedFood } from "../libs/zod/types/OrderedFood";
+import { log } from "console";
 
 export class OrderController {
   async getOrderById(req: Request, res: Response) {
@@ -29,6 +30,7 @@ export class OrderController {
       const { paymentMethod, paymentStatus, restaurantId, foods } = req.body;
 
       const { userId } = (req as any).userData;
+      log("userId", userId);
 
       const parsedFoods = foods.map((food: any) => validateOrderedFood(food));
       const orderData = validateOrder({ paymentMethod, paymentStatus, userId });

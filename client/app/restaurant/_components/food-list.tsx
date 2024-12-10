@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,74 +12,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import AddToCart from "@/components/add-to-cart";
 
-const foodCategories = ["All", "Khai vị", "Món chính", "Tráng miệng", "Đồ uống"];
-// const foods = [
-//   {
-//     id: 1,
-//     name: "Gỏi cuốn",
-//     price: "35000",
-//     category: "Khai vị",
-//     image: "/images/food.jpg",
-//     description: "Gỏi cuốn tươi mát với tôm tươi",
-//   },
-//   {
-//     id: 2,
-//     name: "Phở bò",
-//     price: "65000",
-//     category: "Món chính",
-//     image: "/images/food.jpg",
-//     description: "Phở bò truyền thống với nước dùng đậm đà",
-//   },
-//   {
-//     id: 3,
-//     name: "Phở bò",
-//     price: "65000",
-//     category: "Món chính",
-//     image: "/images/food.jpg",
-//     description: "Phở bò truyền thống với nước dùng đậm đà",
-//   },
-//   {
-//     id: 4,
-//     name: "Phở bò",
-//     price: "65000",
-//     category: "Món chính",
-//     image: "/images/food.jpg",
-//     description: "Phở bò truyền thống với nước dùng đậm đà",
-//   },
-//   {
-//     id: 5,
-//     name: "Phở bò",
-//     price: "65000",
-//     category: "Món chính",
-//     image: "/images/food.jpg",
-//     description: "Phở bò truyền thống với nước dùng đậm đà",
-//   },
-//   {
-//     id: 6,
-//     name: "Phở bò",
-//     price: "65000",
-//     category: "Món chính",
-//     image: "/images/food.jpg",
-//     description: "Phở bò truyền thống với nước dùng đậm đà",
-//   },
-//   // Thêm các món ăn khác
-// ];
-
+const foodCategories = [
+  "rice",
+  "noodle",
+  "soup",
+  "snacks",
+  "drinks",
+  "desserts",
+  "salad",
+  "vegetarian",
+];
 interface Food {
   id: string;
   name: string;
   price: number;
   category: string;
-  image: string;
+  restaurantId: string;
+  imageUrl: string;
   description: string;
 }
 
 interface FoodListComponentProps {
   foods: Food[];
+  accessToken: string | undefined;
 }
 
-export default function FoodList({ foods }: FoodListComponentProps) {
+export default function FoodList({ foods, accessToken }: FoodListComponentProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
@@ -114,7 +74,7 @@ export default function FoodList({ foods }: FoodListComponentProps) {
         >
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Chọn danh mục" />
+              <SelectValue placeholder="choose category" />
             </SelectTrigger>
             <SelectContent>
               {foodCategories.map((category) => (
@@ -147,7 +107,7 @@ export default function FoodList({ foods }: FoodListComponentProps) {
             >
               <div className="relative overflow-hidden">
                 <img
-                  src={food.image}
+                  src={food.imageUrl}
                   alt={food.name}
                   className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110"
                 />
@@ -157,15 +117,9 @@ export default function FoodList({ foods }: FoodListComponentProps) {
                 <p className="text-[#6C757D] mb-4">{food.description}</p>
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-primary">
-                    {food.price.toLocaleString()} VNĐ
+                    {food.price.toLocaleString()}$
                   </span>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-[#007BFF] text-white font-bold px-4 py-2 rounded-md hover:bg-[#0056b3] transition-colors"
-                  >
-                    Add to cart
-                  </motion.button>
+                  <AddToCart food={food} accessToken={accessToken} />
                 </div>
               </div>
             </motion.div>
