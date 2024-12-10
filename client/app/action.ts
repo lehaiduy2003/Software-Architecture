@@ -17,8 +17,8 @@ export async function logout() {
     const logoutData = await response.json();
 
     if (logoutData.success) {
-      cookies().delete("accessToken");
-      cookies().delete("refreshToken");
+      // cookies().delete("accessToken");
+      // cookies().delete("refreshToken");
       revalidatePath("/");
     } else {
       throw new Error("Logout failed");
