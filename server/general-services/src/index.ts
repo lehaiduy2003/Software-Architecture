@@ -11,7 +11,16 @@ import createInvoicesRoute from "./routes/InvoiceRoute";
 import createRestaurantsRoute from "./routes/RestaurantRoute";
 import cors from "cors";
 import dotenv from "dotenv";
+import { rateLimit } from 'express-rate-limit'
 dotenv.config();
+
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 15 minutes
+	limit: 30, // Limit each IP to 10000 requests per `window` (here, per 15 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // `X-RateLimit-*` headers
+})
+
 const app = express();
 app.use(express.json());
 app.use(
@@ -30,7 +39,8 @@ app.use(
 );
 
 app.use(cookieParser(process.env.COOKIE_SECRET as string));
-app.set("trust proxy", true);
+// app.set("trust proxy", true);
+app.use(limiter)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1/foods", createFoodRoute().getRouter());
 app.use("/api/v1/auth", createAuthRoute().getRouter());

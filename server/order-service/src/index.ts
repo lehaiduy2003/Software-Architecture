@@ -7,7 +7,16 @@ import session from "express-session";
 import dotenv from "dotenv";
 import redisClient from "./config/redisClient";
 import createOrderRoute from "./routes/orderRoute";
+import { rateLimit } from 'express-rate-limit'
 dotenv.config();
+
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 15 minutes
+	limit: 30, // Limit each IP to 10000 requests per `window` (here, per 15 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // `X-RateLimit-*` headers
+})
+
 const app = express();
 redisClient.connect();
 app.use(express.json());
@@ -27,6 +36,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(limiter)
 app.set("trust proxy", true);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/v1", createOrderRoute().getRouter());
