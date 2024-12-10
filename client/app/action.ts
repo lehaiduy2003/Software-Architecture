@@ -45,3 +45,22 @@ export const footFetcher = async () => {
     return foods.data;
 }
 
+export const restaurantFetcher = async () => {
+    'use server'
+    const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/general/restaurants/top10`
+    );
+
+    const restaurants = await response.json()
+
+    return restaurants.data;
+}
+
+export const fetchRestaurants = async (page: number, pageSize: number) => {
+    'use server'
+    const response = await fetch(
+        `http://localhost:8080/general/restaurants/all?page=${page}&pageSize=${pageSize}`
+    );
+    const result = await response.json();
+    return result.data;
+}

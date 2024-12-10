@@ -1,100 +1,22 @@
+"use client"
 import React from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import { Star, Clock, ChevronRight } from "lucide-react";
+
+
 import RestaurantCard from "./_components/restaurant-card";
 import FoodCarousel from "./_components/food-carousel";
 import Filter from "./_components/filter";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
+import { fetchRestaurants } from "../action";
 
 // Mock data - in a real app, this would come from an API
 
-const restaurants = [
-  {
-    id: 1,
-    name: "Delicious Pizza Palace",
-    image: "/images/restaurant.jpg",
-    rating: 4.5,
-    reviewCount: 500,
-    isOpen: true,
-    promotion: "20% Off First Order",
-    cuisine: "Italian",
-  },
-  {
-    id: 2,
-    name: "Sushi Master",
-    image: "/images/restaurant.jpg",
-    rating: 4.8,
-    reviewCount: 350,
-    isOpen: false,
-    promotion: "Weekend Special",
-    cuisine: "Japanese",
-  },
-  {
-    id: 3,
-    name: "Sushi Master",
-    image: "/images/restaurant.jpg",
-    rating: 4.8,
-    reviewCount: 300,
-    isOpen: false,
-    promotion: "Weekend Special",
-    cuisine: "Japanese",
-  },
-  {
-    id: 4,
-    name: "Sushi Master",
-    image: "/images/restaurant.jpg",
-    rating: 4.8,
-    reviewCount: 35,
-    isOpen: false,
-    promotion: "Weekend Special",
-    cuisine: "Japanese",
-  },
-  {
-    id: 5,
-    name: "Delicious Pizza Palace",
-    image: "/images/restaurant.jpg",
-    rating: 4.5,
-    reviewCount: 45,
-    isOpen: true,
-    promotion: "20% Off First Order",
-    cuisine: "Italian",
-  },
-  {
-    id: 6,
-    name: "Delicious Pizza Palace",
-    image: "/images/restaurant.jpg",
-    rating: 4.5,
-    reviewCount: 50,
-    isOpen: true,
-    promotion: "20% Off First Order",
-    cuisine: "Italian",
-  },
-  // Add more restaurant mock data
-];
 
-const RestaurantListingsPage = () => {
+const RestaurantListingsPage = async () => {
+  const restaurants = await fetchRestaurants(1, 6);
+
   return (
     <div className="mt-20">
       <Header />
@@ -107,7 +29,7 @@ const RestaurantListingsPage = () => {
 
         {/* Restaurant Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {restaurants.map((restaurant) => (
+          {restaurants.map((restaurant: any) => (
             <RestaurantCard key={restaurant.id} restaurant={restaurant} />
           ))}
         </div>
