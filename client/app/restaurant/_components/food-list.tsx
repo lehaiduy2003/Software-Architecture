@@ -13,73 +13,78 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-const foodCategories = [
-  "All",
-  "Khai vị",
-  "Món chính",
-  "Tráng miệng",
-  "Đồ uống",
-];
-const foods = [
-  {
-    id: 1,
-    name: "Gỏi cuốn",
-    price: "35000",
-    category: "Khai vị",
-    image: "/images/food.jpg",
-    description: "Gỏi cuốn tươi mát với tôm tươi",
-  },
-  {
-    id: 2,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 3,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 4,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 5,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 6,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  // Thêm các món ăn khác
-];
+const foodCategories = ["All", "Khai vị", "Món chính", "Tráng miệng", "Đồ uống"];
+// const foods = [
+//   {
+//     id: 1,
+//     name: "Gỏi cuốn",
+//     price: "35000",
+//     category: "Khai vị",
+//     image: "/images/food.jpg",
+//     description: "Gỏi cuốn tươi mát với tôm tươi",
+//   },
+//   {
+//     id: 2,
+//     name: "Phở bò",
+//     price: "65000",
+//     category: "Món chính",
+//     image: "/images/food.jpg",
+//     description: "Phở bò truyền thống với nước dùng đậm đà",
+//   },
+//   {
+//     id: 3,
+//     name: "Phở bò",
+//     price: "65000",
+//     category: "Món chính",
+//     image: "/images/food.jpg",
+//     description: "Phở bò truyền thống với nước dùng đậm đà",
+//   },
+//   {
+//     id: 4,
+//     name: "Phở bò",
+//     price: "65000",
+//     category: "Món chính",
+//     image: "/images/food.jpg",
+//     description: "Phở bò truyền thống với nước dùng đậm đà",
+//   },
+//   {
+//     id: 5,
+//     name: "Phở bò",
+//     price: "65000",
+//     category: "Món chính",
+//     image: "/images/food.jpg",
+//     description: "Phở bò truyền thống với nước dùng đậm đà",
+//   },
+//   {
+//     id: 6,
+//     name: "Phở bò",
+//     price: "65000",
+//     category: "Món chính",
+//     image: "/images/food.jpg",
+//     description: "Phở bò truyền thống với nước dùng đậm đà",
+//   },
+//   // Thêm các món ăn khác
+// ];
 
+interface Food {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  image: string;
+  description: string;
+}
 
+interface FoodListComponentProps {
+  foods: Food[];
+}
 
-export default function FoodList() {
+export default function FoodList({ foods }: FoodListComponentProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
   const filteredFoods = foods.filter(
-    (food) =>
+    (food: Food) =>
       food.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory === "Tất cả" || food.category === selectedCategory)
   );
@@ -124,7 +129,7 @@ export default function FoodList() {
 
       <AnimatePresence>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredFoods.map((food, index) => (
+          {filteredFoods.map((food: Food, index: number) => (
             <motion.div
               key={food.id}
               initial={{ opacity: 0, y: 20 }}
@@ -148,9 +153,7 @@ export default function FoodList() {
                 />
               </div>
               <div className="p-4">
-                <h3 className="text-xl font-bold mb-2 text-[#212529]">
-                  {food.name}
-                </h3>
+                <h3 className="text-xl font-bold mb-2 text-[#212529]">{food.name}</h3>
                 <p className="text-[#6C757D] mb-4">{food.description}</p>
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-primary">
@@ -169,7 +172,9 @@ export default function FoodList() {
           ))}
         </div>
         <div className="flex justify-center mt-8 space-x-2">
-          <Button variant="outline" className="font-bold">Previous</Button>
+          <Button variant="outline" className="font-bold">
+            Previous
+          </Button>
           <Button className="font-bold">Next</Button>
         </div>
       </AnimatePresence>
