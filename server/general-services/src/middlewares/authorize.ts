@@ -14,7 +14,7 @@ export const authorize = (requiredPermissions: string[]) => {
       userPermissions.includes(permission)
     );
     if (!hasPermission) {
-      res.status(403).json({ message: "Forbidden" });
+      res.status(403).json({ message: "You are not allow access to this resource." });
       return;
     }
     log("hasPermission", hasPermission);

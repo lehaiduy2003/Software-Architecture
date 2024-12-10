@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useStripe } from "@stripe/react-stripe-js";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import useCartStore from "@/app/stores/cart-store";
 
 const SuccessIcon = () => (
@@ -165,17 +166,7 @@ export default function CompletePage() {
           </table>
         </div>
       )}
-      {intentId && (
-        <a
-          href={`https://dashboard.stripe.com/payments/${intentId}`}
-          id="view-details"
-          className="mt-4 text-blue-600 hover:text-blue-800"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View payment details
-        </a>
-      )}
+      <Link href="/">Return to home</Link>
     </div>
   );
 }

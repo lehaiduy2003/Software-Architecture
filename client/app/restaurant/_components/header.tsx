@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart } from "lucide-react";
+import Shopping from "@/components/common/shopping";
 
 export default function RestaurantHeader() {
   return (
@@ -41,14 +41,7 @@ export default function RestaurantHeader() {
           >
             Home page
           </a>
-          <div className="relative">
-            <button className="text-gray-600 hover:text-gray-800 relative">
-              <ShoppingCart className="w-6 h-6 text-white" />
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                0
-              </span>
-            </button>
-          </div>
+          <Shopping />
         </nav>
       </div>
     </header>

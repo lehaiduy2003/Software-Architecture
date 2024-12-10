@@ -22,8 +22,7 @@ export enum ERoles {
     ADMIN = 1,
     CUSTOMER = 2,
     RESTAURANT_MANAGER = 3,
-    SHIPPER = 4,
-    OWNER = 5
+    OWNER = 4
 }
 
 export function getRoleLabel(role: ERoles): string {
@@ -34,8 +33,6 @@ export function getRoleLabel(role: ERoles): string {
             return 'CUSTOMER';
         case ERoles.RESTAURANT_MANAGER:
             return 'RESTAURANT_MANAGER';
-        case ERoles.SHIPPER:
-            return 'SHIPPER';
         case ERoles.OWNER:
             return 'OWNER';
         default:

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { Search, Filter } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -12,74 +12,39 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import AddToCart from "@/components/add-to-cart";
 
 const foodCategories = [
-  "All",
-  "Khai vị",
-  "Món chính",
-  "Tráng miệng",
-  "Đồ uống",
+  "rice",
+  "noodle",
+  "soup",
+  "snacks",
+  "drinks",
+  "desserts",
+  "salad",
+  "vegetarian",
 ];
-const foods = [
-  {
-    id: 1,
-    name: "Gỏi cuốn",
-    price: "35000",
-    category: "Khai vị",
-    image: "/images/food.jpg",
-    description: "Gỏi cuốn tươi mát với tôm tươi",
-  },
-  {
-    id: 2,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 3,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 4,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 5,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  {
-    id: 6,
-    name: "Phở bò",
-    price: "65000",
-    category: "Món chính",
-    image: "/images/food.jpg",
-    description: "Phở bò truyền thống với nước dùng đậm đà",
-  },
-  // Thêm các món ăn khác
-];
+interface Food {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+  restaurantId: string;
+  imageUrl: string;
+  description: string;
+}
 
+interface FoodListComponentProps {
+  foods: Food[];
+  accessToken: string | undefined;
+}
 
-
-export default function FoodList() {
+export default function FoodList({ foods, accessToken }: FoodListComponentProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
   const filteredFoods = foods.filter(
-    (food) =>
+    (food: Food) =>
       food.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedCategory === "Tất cả" || food.category === selectedCategory)
   );
@@ -109,7 +74,7 @@ export default function FoodList() {
         >
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Chọn danh mục" />
+              <SelectValue placeholder="choose category" />
             </SelectTrigger>
             <SelectContent>
               {foodCategories.map((category) => (
@@ -124,7 +89,7 @@ export default function FoodList() {
 
       <AnimatePresence>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {filteredFoods.map((food, index) => (
+          {filteredFoods.map((food: Food, index: number) => (
             <motion.div
               key={food.id}
               initial={{ opacity: 0, y: 20 }}
@@ -142,34 +107,28 @@ export default function FoodList() {
             >
               <div className="relative overflow-hidden">
                 <img
-                  src={food.image}
+                  src={food.imageUrl}
                   alt={food.name}
                   className="w-full h-48 object-cover transition-transform duration-300 hover:scale-110"
                 />
               </div>
               <div className="p-4">
-                <h3 className="text-xl font-bold mb-2 text-[#212529]">
-                  {food.name}
-                </h3>
+                <h3 className="text-xl font-bold mb-2 text-[#212529]">{food.name}</h3>
                 <p className="text-[#6C757D] mb-4">{food.description}</p>
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-primary">
-                    {food.price.toLocaleString()} VNĐ
+                    {food.price.toLocaleString()}$
                   </span>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    className="bg-[#007BFF] text-white font-bold px-4 py-2 rounded-md hover:bg-[#0056b3] transition-colors"
-                  >
-                    Add to cart
-                  </motion.button>
+                  <AddToCart food={food} accessToken={accessToken} />
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
         <div className="flex justify-center mt-8 space-x-2">
-          <Button variant="outline" className="font-bold">Previous</Button>
+          <Button variant="outline" className="font-bold">
+            Previous
+          </Button>
           <Button className="font-bold">Next</Button>
         </div>
       </AnimatePresence>

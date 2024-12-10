@@ -23,34 +23,32 @@ const RestaurantCard = ({ restaurant }: any) => {
     >
       <div className="relative">
         <img
-          src={restaurant.image}
+          src={restaurant.imageUrl}
           alt={restaurant.name}
           className="w-full h-48 object-cover rounded-t-lg"
         />
-        {restaurant.promotion && (
-          <Badge variant="destructive" className="absolute top-2 right-2">
-            {restaurant.promotion}
-          </Badge>
-        )}
+        <Badge variant="destructive" className="absolute top-2 right-2">
+          Discount
+        </Badge>
       </div>
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl">{restaurant.name}</CardTitle>
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-500" fill="currentColor" />
-            <span>{restaurant.rating}</span>
+            <span>4.5</span>
             <span className="text-gray-500 text-sm">
-              ({restaurant.reviewCount})
+              {restaurant.totalOrder}
             </span>
           </div>
         </div>
         <CardDescription className="flex justify-between items-center">
           <span>{restaurant.cuisine}</span>
           <Badge
-            variant={restaurant.isOpen ? "default" : "secondary"}
-            className={restaurant.isOpen ? "bg-green-500" : "bg-gray-400"}
+            variant={"secondary"}
+            className={ "bg-green-500 text-white font-bold"}
           >
-            {restaurant.isOpen ? "Open" : "Closed"}
+            Open
           </Badge>
         </CardDescription>
       </CardHeader>

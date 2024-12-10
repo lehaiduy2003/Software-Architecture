@@ -1,6 +1,7 @@
 import { Card, CardContent } from "./ui/card";
 import { footFetcher } from "@/app/action";
 import AddToCart from "./add-to-cart";
+import { cookies } from "next/headers";
 
 type FoodItem = {
   id: string;
@@ -14,6 +15,8 @@ type FoodItem = {
 //Fix sau
 const FeaturedDishes = async () => {
   const foods = await footFetcher();
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -33,7 +36,7 @@ const FeaturedDishes = async () => {
               <p className="text-muted-foreground">From {dish.description}</p>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-lg font-bold text-green-400">{dish.price} $</span>
-                <AddToCart food={dish} />
+                <AddToCart food={dish} accessToken={accessToken} />
               </div>
             </CardContent>
           </Card>

@@ -1,29 +1,29 @@
 import { ERoles, getRoleLabel } from "./interfaces/IUser";
 
 export const RolePermissions: Record<string, string[]> = {
-    [getRoleLabel(ERoles.ADMIN)]: [
-        "create",
-        "read",
-        "update",
-        "delete"
-    ],
+  [getRoleLabel(ERoles.ADMIN)]: [
+    "getAllUsers",
+    "getUserById",
+    "updateUser",
+    "deleteUser",
+    "getInvoiceById",
+    "getInvoices",
+  ],
 
-    [getRoleLabel(ERoles.RESTAURANT_MANAGER)]: [
-        "create",
-        "read",
-        "update",
-        "delete"
-    ],
+  [getRoleLabel(ERoles.RESTAURANT_MANAGER)]: [
+    "createFood",
+    "deleteFood",
+    "updateFoodQuantity",
+    "updateFood",
+  ],
 
-    [getRoleLabel(ERoles.CUSTOMER)]: [
-        "read"
-    ],
+  [getRoleLabel(ERoles.CUSTOMER)]: [
+    "updateUser",
+    "getInvoiceById",
+    "getInvoices",
+    "createInvoice",
+    "checkout",
+  ],
 
-    [getRoleLabel(ERoles.SHIPPER)]: [
-        "read"
-    ],
-
-    [getRoleLabel(ERoles.OWNER)]: [
-        "read"
-    ]
+  [getRoleLabel(ERoles.OWNER)]: ["read"],
 };

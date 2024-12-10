@@ -3,7 +3,9 @@ import { BaseRoute } from "../utils/BaseRoute";
 import FoodController from "../controllers/FoodController";
 import FoodService from "../services/FoodService";
 import { authenticate } from "../middlewares/authenticate";
-import verifyToken from "../middlewares/revokeToken";
+import verifyToken from "../middlewares/verifyToken";
+import { authorize } from "../middlewares/authorize";
+import refreshToken from "../middlewares/refreshToken";
 
 class FoodRoute extends BaseRoute {
   private foodController: FoodController;
@@ -19,10 +21,38 @@ class FoodRoute extends BaseRoute {
     // this.router.get("/", authenticate, this.foodController.getAllFood);
     this.router.get("", this.foodController.getFoodsByCategoryAndRestaunrant);
     this.router.get("/:foodId", this.foodController.getFoodById);
-    this.router.post("/", verifyToken, authenticate, this.foodController.createFood);
-    this.router.put("/:foodId", verifyToken, authenticate, this.foodController.updateFood);
-    this.router.delete("/:foodId", verifyToken, authenticate, this.foodController.deleteFood);
-    this.router.put("/update-food-quantity/:foodId", verifyToken, authenticate, this.foodController.updateFoodQuantity);
+    this.router.post(
+      "/",
+      verifyToken,
+      refreshToken,
+      authenticate,
+      authorize(["createFood"]),
+      this.foodController.createFood
+    );
+    this.router.put(
+      "/:foodId",
+      verifyToken,
+      refreshToken,
+      authenticate,
+      authorize(["updateFood"]),
+      this.foodController.updateFood
+    );
+    this.router.delete(
+      "/:foodId",
+      verifyToken,
+      refreshToken,
+      authenticate,
+      authorize(["deleteFood"]),
+      this.foodController.deleteFood
+    );
+    this.router.put(
+      "/update-food-quantity/:foodId",
+      verifyToken,
+      refreshToken,
+      authenticate,
+      authorize(["updateFoodQuantity"]),
+      this.foodController.updateFoodQuantity
+    );
   }
 }
 

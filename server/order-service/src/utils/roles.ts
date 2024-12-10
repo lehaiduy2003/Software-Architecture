@@ -16,11 +16,7 @@ export const RolePermissions: Record<string, string[]> = {
     ],
 
     [getRoleLabel(ERoles.CUSTOMER)]: [
-        "read"
-    ],
-
-    [getRoleLabel(ERoles.SHIPPER)]: [
-        "read"
+        "createOrder",
     ],
 
     [getRoleLabel(ERoles.OWNER)]: [
