@@ -1,6 +1,8 @@
 import InvoiceController from "../controllers/InvoiceController";
 import { authenticate } from "../middlewares/authenticate";
-import verifyToken from "../middlewares/revokeToken";
+import { authorize } from "../middlewares/authorize";
+import refreshToken from "../middlewares/refreshToken";
+import verifyToken from "../middlewares/verifyToken";
 import InvoiceService from "../services/InvoiceService";
 import { BaseRoute } from "../utils/BaseRoute";
 
@@ -14,8 +16,8 @@ class InvoiceRoute extends BaseRoute {
   }
 
   private initRoutes() {
-    this.router.get("/", verifyToken, authenticate, this.invoiceController.getInvoices);
-    this.router.get("/:userId", verifyToken, authenticate, this.invoiceController.getInvoiceById);
+    this.router.get("/", verifyToken, authenticate, authorize(["getInvoices"]), this.invoiceController.getInvoices);
+    this.router.get("/:userId", verifyToken, refreshToken, authenticate, authorize(["getInvoiceById"]), this.invoiceController.getInvoiceById);
   }
 }
 // /invoices/

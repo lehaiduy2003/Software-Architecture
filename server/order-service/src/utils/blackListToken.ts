@@ -11,8 +11,13 @@ async function addToBlacklist(jti: string, exp: number): Promise<void> {
 
 // Kiểm tra xem token có bị thu hồi không
 async function isTokenRevoked(jti: string): Promise<boolean> {
-    const result = await redisClient.get(jti);
-    return result === "revoked";
+    try {
+        const result = await redisClient.get(jti);
+        return result === "revoked";
+    } catch (error) {
+        log("Error fetching from Redis: ", error);
+        return false;
+    }
 }
 
 export { addToBlacklist, isTokenRevoked };

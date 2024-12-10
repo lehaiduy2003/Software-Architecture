@@ -38,7 +38,7 @@ export const setAuthCookies = async (
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
     path: "/",
-    maxAge: 30 * 60 * 1000, // 30 minutes
+    maxAge: 1 * 60 * 1000, // 1 minute
   });
 
   res.cookie("refreshToken", refreshToken, {
@@ -57,7 +57,7 @@ export const setAuthCookies = async (
   // log("userData", (req as any).userData);
 };
 
-// JWT Authentication Middleware with proper refreshToken validation
+
 export const authenticate = async (
   req: Request,
   res: Response,
@@ -70,89 +70,19 @@ export const authenticate = async (
   log("refreshToken", refreshToken);
 
   // Nếu không có accessToken, kiểm tra refreshToken
-  if (!accessToken && refreshToken) {
-    jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_TOKEN_SECRET as string,
-      async (refreshErr: any, decodedRefreshToken: any) => {
-        if (refreshErr) {
-          return res.status(403).json({ message: "Invalid refresh token!" });
-        }
-
-        // Tạo accessToken mới từ refreshToken
-        const newAccessToken = jwt.sign(
-          {
-            userId: decodedRefreshToken.userId,
-            role: decodedRefreshToken.role,
-          },
-          process.env.JWT_ACCESS_TOKEN_SECRET as string,
-          { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || "30m" }
-        );
-
-        // Lưu lại accessToken mới vào cookie
-        res.cookie("accessToken", newAccessToken, {
-          httpOnly: true,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-          maxAge: 30 * 60 * 1000, // 30 phút
-        });
-
-        // Gắn thông tin người dùng vào request để tiếp tục xử lý
-        (req as any).userData = decodedRefreshToken;
-        return next();
+  if (accessToken) {
+    jwt.verify(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET as string, (err: any, decodedToken: any) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid access token!" });
       }
-    );
-  } else if (accessToken) {
-    // Nếu có accessToken, xác thực nó
-    jwt.verify(
-      accessToken,
-      process.env.JWT_ACCESS_TOKEN_SECRET as string,
-      (err: any, decodedToken: any) => {
-        if (err && err.name === "TokenExpiredError" && refreshToken) {
-          // Nếu accessToken hết hạn và có refreshToken
-          jwt.verify(
-            refreshToken,
-            process.env.JWT_REFRESH_TOKEN_SECRET as string,
-            async (refreshErr: any, decodedRefreshToken: any) => {
-              if (refreshErr) {
-                return res.status(403).json({ message: "Invalid refresh token!" });
-              }
-              // Tạo accessToken mới từ refreshToken
-              const newAccessToken = jwt.sign(
-                {
-                  userId: decodedRefreshToken.userId,
-                  role: decodedRefreshToken.role,
-                },
-                process.env.JWT_ACCESS_TOKEN_SECRET as string,
-                { expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRATION || "30m" }
-              );
-              res.clearCookie("accessToken");
-              // Lưu lại accessToken mới vào cookie
-              res.cookie("accessToken", newAccessToken, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-                maxAge: 30 * 60 * 1000, // 30 phút
-              });
-
-              // Gắn thông tin người dùng vào request để tiếp tục xử lý
-              (req as any).userData = decodedRefreshToken;
-              return next();
-            }
-          );
-        } else if (err) {
-          // Trường hợp accessToken không hợp lệ hoặc có lỗi khác
-          return res.status(403).json({ message: "Invalid access token!" });
-        } else {
-          // Token hợp lệ, tiếp tục xử lý
-          (req as any).userData = decodedToken;
-          return next();
-        }
-      }
-    );
+      (req as any).userData = decodedToken; // Gắn thông tin người dùng vào req
+      return next();
+    });
+  } else if (refreshToken) {
+    // Nếu không có accessToken nhưng có refreshToken
+    return next();  // Chuyển qua middleware tái tạo token
   } else {
-    // Trường hợp không có accessToken hoặc refreshToken
+    // Trường hợp không có accessToken và refreshToken
     res.status(401).json({ message: "Authentication required!" });
     return;
   }

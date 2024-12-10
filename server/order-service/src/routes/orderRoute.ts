@@ -3,7 +3,8 @@ import { OrderController } from "../controllers/OrderController";
 import { BaseRoute } from "../utils/BaseRoute";
 import { authenticate } from "../middlewares/authenticate";
 import { authorize } from "../middlewares/authorize";
-import verifyToken from "../middlewares/revokeToken";
+import verifyToken from "../middlewares/verifyToken";
+import refreshToken from "../middlewares/refreshToken";
 
 class OrderRouter extends BaseRoute {
   private readonly orderController: OrderController;
@@ -19,7 +20,7 @@ class OrderRouter extends BaseRoute {
   private initRoutes() {
     this.router.get("/", this.orderController.getOrderList);
     this.router.get("/:orderId", this.orderController.getOrderById);
-    this.router.post("/", verifyToken, authenticate, this.orderController.createOrder);
+    this.router.post("/", verifyToken, refreshToken, authenticate, authorize(["createOrder"]), this.orderController.createOrder);
   }
 }
 

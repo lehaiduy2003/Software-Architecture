@@ -167,39 +167,63 @@ export default class AuthController extends BaseController {
     }
   };
 
-  // public getAccessTokenFromCookie(cookie: string): string | null {
-  //   const cookies = cookie.split("; ");
-  //   for (const c of cookies) {
-  //     const [name, value] = c.split("=");
-  //     if (name === "accessToken") {
-  //       return decodeURIComponent(value);
-  //     }
-  //   }
-  //   return null;
-  // }
   public logout = async (req: Request, res: Response) => {
     req.session.destroy(async (err: any) => {
       if (err) {
         return this.sendError(res, 500, "Logout failed");
       }
+
       const token = req.cookies["accessToken"];
-      // const token = this.getAccessTokenFromCookie(authHeader.cookie as string);
       log("token: ", token);
-      // const token = "";
+
+      // Kiểm tra xem có token không
       if (!token) {
-        return this.sendError(res, 400, "Token is required");
+        res.clearCookie("refreshToken");
+        res.clearCookie("connect.sid", { path: "/" });
+        this.sendResponse(res, 200, {
+          success: true,
+          message: "Logged out successfully",
+        });
       }
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_ACCESS_TOKEN_SECRET as string
-      ) as jwt.JwtPayload;
-      // Thêm token vào danh sách đen
-      await addToBlacklist(decoded.jti as string, decoded.exp as number);
-      // Clear cookies
+
+      try {
+        // Xác thực token, bỏ qua expiration
+        const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
+          ignoreExpiration: true,
+        }) as jwt.JwtPayload;
+
+        // Nếu token hợp lệ hoặc đã hết hạn, thêm vào blacklist
+        const jti = decoded.jti;
+        const exp = decoded.exp;
+
+        if (jti && exp) {
+          await addToBlacklist(jti, exp);
+        }
+      } catch (err) {
+        // Nếu lỗi là token hết hạn, vẫn tiếp tục thêm vào blacklist
+        if (err instanceof jwt.TokenExpiredError) {
+          try {
+            const decoded = jwt.decode(token) as jwt.JwtPayload;
+
+            const jti = decoded?.jti;
+            const exp = decoded?.exp;
+
+            if (jti && exp) {
+              await addToBlacklist(jti, exp);
+            }
+          } catch (decodeError) {
+            log("Failed to decode expired token:", decodeError);
+          }
+        } else {
+          log("Failed to verify token:", err);
+        }
+      }
+
+      // Xóa cookie bất kể token hợp lệ hay không
       res.clearCookie("refreshToken");
       res.clearCookie("accessToken");
-      // Clear the session cookie (connect.sid)
       res.clearCookie("connect.sid", { path: "/" });
+
       log("Logged out successfully");
       this.sendResponse(res, 200, {
         success: true,
@@ -207,4 +231,5 @@ export default class AuthController extends BaseController {
       });
     });
   };
+
 }

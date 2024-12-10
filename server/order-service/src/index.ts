@@ -1,13 +1,15 @@
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerDocument from "../swagger.json";
-import createOrderRoute from "./routes/orderRoute";
+import createOrderRoute from "./routes/OrderRoute";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import dotenv from "dotenv";
+import redisClient from "./config/redisClient";
 dotenv.config();
 const app = express();
+redisClient.connect();
 app.use(express.json());
 app.use(
   session({
